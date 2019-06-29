@@ -1,0 +1,92 @@
+ <header className="app-header">
+           
+                    <div className = "login-button">
+                        <Button variant="contained" color="default"><img src={accountCircle} className="accountCircle-logo" alt="accountCircle" />LOGIN</Button>
+                     </div>
+               
+            </header>
+
+
+.accountCircle-logo{
+   
+    padding-right: 6%;
+}
+.login-button{
+    padding: 1%;
+    vertical-align: center;
+}
+
+
+
+
+                <SearchIcon  id = "SearchIcon-id" fill = "white" className="SearchIcon-logo" />
+                
+       
+             <TextField
+                  id="search-text-input"
+                  placeholder = "Search by Restaurant Name"
+                  margin="normal"
+                  fullWidth               
+                  
+                
+                />
+       
+
+ <div className="search-icon-container">
+            
+                <TextField
+
+                InputProps={{
+                    endAdornment: (
+                      <InputAdornment>
+                        <IconButton>
+                        <SearchIcon  id = "SearchIcon-id" fill = "white" className="SearchIcon-logo" />
+                                
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                id="search-text-input"
+                placeholder = "Search by Restaurant Name"
+                margin="normal"
+                fullWidth     
+ 
+/>
+                </div>
+
+
+
+
+<div style={{position: 'relative', display: 'inline-block'}}>
+       <SearchIcon style={{position: 'absolute', left: 0, top: 15, width: 20, height: 20}}/>
+       <TextField
+              style={{textIndent: 30}}
+              hintText="Search by Name"
+              onChange={_.debounce((event, value) => this.handleSearch(value), 500)}
+        />
+</div>
+
+
+
+
+/*
+
+#left {
+    float: left;
+    width: 20%;
+    /* The width is 20%, by default */
+}
+*/
+
+#middle {
+    padding: 20px;
+    float: left;
+    width: 60%;
+    /* The width is 60%, by default */
+}
+
+#right {
+    float: left;
+    width: 20%;
+    /* The width is 20%, by default */
+}

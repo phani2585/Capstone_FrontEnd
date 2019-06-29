@@ -1,0 +1,194 @@
+/*  grey Header   */
+
+.app-header-container {
+    background-color:#A9A9A9;
+    height: 36px;
+    padding: 8px 32px 8px 16px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.fastfood-icon-container {
+    float: left;
+    color:white;
+}
+
+.search-icon-container {
+    display: flex;
+    border-radius: 4px;
+    width:300px;
+}
+#search-input {
+    color:white;
+}
+
+.MuiInputBase-root.MuiInput-root.MuiInput-underline {
+    width: 250px;
+    color: black;
+    
+}
+
+.search-icon {
+    align-self: center;
+    color:white;
+}
+
+.search-text-input {
+    padding: 0px 4px 4px 0px;
+    font-size: 15px;
+    width:300px;
+    
+}
+
+/*  login button to float right  */
+
+.login-button-container {
+    float: right;
+}
+.grid-item {
+    margin: 15px;
+  }
+  
+  .cardStyle {
+    display: flex;
+    justify-content: center;
+    margin-top: 2%;
+  }
+  
+  .image-properties {
+    display:flex;
+    justify-content: center;
+    padding: 20px;
+    width: 'auto';
+    height:'auto';
+  
+  }
+  .cardHeader {
+    display:flex;
+    float:flex-start;
+  }
+  .cardContent {
+    display:flex;
+    justify-content: center;
+  }  
+
+/*  account circle icon having a padding on right   */
+
+.accountCircle-logo {
+    padding-right: 6%;
+}
+/*css for login/signup tabs */
+
+.tabs {
+    margin: 20px;
+}
+
+.dispNone {
+    display: none;
+}
+
+.dispBlock {
+    display: block;
+}
+.red {
+    color:red;
+}
+#star-icon {
+    color:white;
+}
+#left-button{
+    float:left;
+    color:white;
+}
+#right-avg-price{
+    float:right;
+}
+#last-row{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    float:bottom;
+}
+@media (max-width:600px) {
+    header {
+        flex-direction: column;
+        height: 100%;
+    }
+    .app-header-container {
+        background-color: grey;
+        height: 100%;
+    }
+    .search-icon-container {
+        float: left;
+    }
+}
+.header-main-container {
+    background-color: #263238;
+    padding: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .header-logo-container, .header-search-container, .header-upload-btn-container, .header-profile-btn-container {
+    align-self: center;
+  }
+  
+  .logo {
+    color: #fff;
+    font-size: 18px;
+    text-decoration: none;
+  }
+  
+  .header-search-container {
+    display: flex;
+    background: #808080;
+    border-radius: 4px;
+    width: 300px;
+    margin-right: 16px;
+    padding: 4px;
+    height: 50%;
+  }
+  
+  .search-icon {
+    padding: 0 7px;
+    align-self: center;
+  }
+  
+  .image-preview-container {
+    padding: 15px 0;
+    text-align: center;
+  }
+  
+  .image-preview {
+    max-height: 250px;
+    max-width: 250px;
+  }
+  
+  .user-profile-drop-down {
+    position: absolute;
+    right: 16px;
+    background: #dfdfdf;
+    padding: 16px;
+    border-radius: 6px;
+    margin-top: 3px;
+    display: block;
+  }
+  
+  .my-account-dropdown-menu-item, .logout-dropdown-menu-item {
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+  }
+  
+  /* @media (max-width: 992px) {
+    .flexHeader {
+      flex-direction: column;
+    }
+    .flexHeaderNoLink {
+      flex-direction: column;
+    }
+    .headerPadding {
+      height: 64px;
+    }
+  } */
