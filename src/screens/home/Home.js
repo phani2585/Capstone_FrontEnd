@@ -15,19 +15,20 @@ import GridListTile from '@material-ui/core/GridListTile';
 
 
 // inline styles for Material-UI components
+
+
 const styles = {
   RestaurantCard: {
     marginBottom: 40,
-    maxwidth:460,
     margin: '8px',
     shadow: '20px',
-    height:550
+    height:600,
+    
   },
 media: {
-    width:460,
+    width:450,
     height:200,
   }
-
 }
 class Home extends Component {
 
@@ -102,7 +103,7 @@ class Home extends Component {
           /></div>
          <div >
      <br />
-     <GridList cellHeight={"auto"} className={classes.gridListMain} cols={4}>
+     <GridList cellHeight="auto" className={classes.gridListMain} cols={4}>
          {restaurantInfo.map(restaurant => (
 
              <GridListTile key={"restaurant" + restaurant.id} cols={restaurant.cols || 1}>

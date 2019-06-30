@@ -1,9 +1,10 @@
 
-  /*.cardStyle {
-    display: flex;
-    justify-content: center;
-    margin-top: 2%;
-  } */
+  .cardStyle {
+    display: 'flex';
+    justify-content: 'center';
+    margin-top: '2%';
+    
+  } 
   #star-icon {
     color:white;
 }
@@ -22,6 +23,9 @@
     flex-direction: row;
     justify-content: space-between;
     float:bottom;
+}
+button#left-button {
+    background-color:#ffdb58;
 }
 /*#media {
     width:'450px';
