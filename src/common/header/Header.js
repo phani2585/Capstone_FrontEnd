@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import './Header.css';
-import '../../screens/home/Home';
+import Login from '../../screens/login/Login';
+import * as Utils from "../../common/Utils";
+import * as UtilsUI from "../../common/UtilsUI";
+import * as Constants from "../../common/Constants";
 import Button from '@material-ui/core/Button';
 import Modal from 'react-modal';
 import Tabs from '@material-ui/core/Tabs';
@@ -13,27 +17,8 @@ import { withStyles } from "@material-ui/core/styles";
 import PropTypes from 'prop-types';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import accountCircle from '../../assets/icon/accountCircle.svg';
-//import fastfood from '../../assets/icon/fastfood.svg';
-//import { withStyles } from "@material-ui/core/styles";
-//import Input from '@material-ui/core/Input';
-//import TextField from '@material-ui/core/TextField';
-//import IconButton from "@material-ui/core/IconButton";
-//import InputAdornment from "@material-ui/core/InputAdornment";
-//import search from '../../assets/icon/search.svg';
 import FastFoodIcon from '@material-ui/icons/Fastfood';
 import SearchIcon from '@material-ui/icons/Search';
-//import { InputBase } from '@material-ui/core';
-//import restaurantInfo from '../../common/restaurantInfo';
-//import Grid from '@material-ui/core/Grid';
-//import GridList from '@material-ui/core/GridList';
-//import GridListTile from '@material-ui/core/GridListTile';
-//import Card from '@material-ui/core/Card';
-//import CardHeader from '@material-ui/core/CardHeader';
-//import CardContent from '@material-ui/core/CardContent';
-//import Avatar from '@material-ui/core/Avatar';
-//import Star from '@material-ui/icons/Star';
-//import CardActionArea from '@material-ui/core/CardActionArea';
-//import CardMedia from '@material-ui/core/CardMedia';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 
@@ -66,7 +51,7 @@ TabContainer.propTypes = {
 }
 
 // inline styles for Material-UI components
-const styles = theme => ({
+const styles =  {
     root: {
         width: '100%',
     },
@@ -83,9 +68,6 @@ const styles = theme => ({
         width: 460,
         height: 200,
     },
-    button: {
-        margin: theme.spacing.unit,
-    },
     input: {
         display: 'none',
     },
@@ -97,7 +79,7 @@ const styles = theme => ({
     searchInput: {
         width: "80%"
       }
-});
+};
 
 /**
  * Class component for the header
@@ -108,90 +90,251 @@ class Header extends Component {
 
     constructor() {
         super();
-        /*
+        
         this.openModalHandler = this.openModalHandler.bind(this);
         this.closeModalHandler =this.closeModalHandler.bind(this);
         this.tabChangeHandler =this.tabChangeHandler.bind(this);
-        will ve to test this line's use n add rest of Handlers */
+        this.inputContactnoChangeHandler =this.inputContactnoChangeHandler.bind(this);
+        this.inputLoginPasswordChangeHandler =this.inputLoginPasswordChangeHandler.bind(this);
+        //this.loginSignedupCustomer =this.loginSignedupCustomer.bind(this);
+        this.inputFirstNameChangeHandler =this.inputFirstNameChangeHandler.bind(this);
+        this.inputLastNameChangeHandler =this.inputLastNameChangeHandler.bind(this);
+        this.inputEmailChangeHandler =this.inputEmailChangeHandler.bind(this);
+        this.inputRegisterPasswordChangeHandler =this.inputRegisterPasswordChangeHandler.bind(this);
+        this.inputContactChangeHandler =this.inputContactChangeHandler.bind(this);
+        this.signupNewCustomer =this.signupNewCustomer.bind(this);
 
         this.state = {
-            modalIsOpen: false,
-            menuIsDroppedDown: false,
-            value: 0,
-            dispWhiteUnderLine: "dispWhiteUnderLine",
-            contactnoRequired: "dispNone",
-            contactno: "",
-            loginPasswordRequired: "dispNone",
-            loginPassword: "",
-            firstnameRequired: "dispNone",
-            firstname: "",
-            lastname: "",
-            emailRequired: "dispNone",
-            email: "",
-            registerPasswordRequired: "dispNone",
-            registerPassword: "",
-            contactRequired: "dispNone",
-            contact: "",
-            restaurantInfo: []
+            loginFormUserValues: {
+                // object containing values entered by the user in the text fields of the login form
+                contactno: "",
+                loginPassword: ""
+              },
+              loginFormValidationClassNames: {
+                // object containing the classnames for the validation messages displayed below the text fields of the login form
+                contactno: Constants.DisplayClassname.DISPLAY_NONE,
+                loginPassword: Constants.DisplayClassname.DISPLAY_NONE
+              },
+              loginErrorMsg: "", // error message displayed for wrong credentials in the login form 
+              signupFormUserValues: {
+                contact: "",
+                email: "",
+                firstname: "",
+                lastname: "",
+                registerPassword: "",
+              },
+              signupFormValidationClassNames: {
+                // object containing the classnames for the validation messages displayed below the text fields of the signup form
+                contact:Constants.DisplayClassname.DISPLAY_NONE,
+                email:Constants.DisplayClassname.DISPLAY_NONE,
+                firstname:Constants.DisplayClassname.DISPLAY_NONE,
+                registerPassword:Constants.DisplayClassname.DISPLAY_NONE
+            },
+            modalIsOpen: false,//login modal state is closed
+            menuIsDroppedDown: false,//Menu in login form is not dropped down
+            value: 0,//Initial value for tab container is set to '0'
+            signupSuccess: false,//signup status is false
+            loggedIn: sessionStorage.getItem("access-token") == null ? false : true,//Logged in status is null if there is no accesstoken in sessionstorage
+            restaurantInfo: []//array to store restaurant information from JSON
         }
     }
-    /*dispUnderLineHandler =() => {
-        this.setState({
-            dispWhiteUnderLine:"dispWhiteUnderLine"
-        });
-    }*/
 
     /**
-   * Event handler called when the upload button inside the header is clicked to open the upload image modal
+   * Event handler called when the login button inside the header is clicked to open the login and signup modal
    * @memberof Header
    */
     openModalHandler = () => {
-        this.setState({
+        this.setState({ 
             modalIsOpen: true,
-            value: 0,
-            contactnoRequired: "dispNone",
-            contactno: "",
-            loginPasswordRequired: "dispNone",
-            loginPassword: "",
-            firstnameRequired: "dispNone",
-            firstname: "",
-            lastname: "",
-            emailRequired: "dispNone",
-            email: "",
-            registerPasswordRequired: "dispNone",
-            registerPassword: "",
-            contactRequired: "dispNone",
-            contact: "",
             signupSuccess: false,
             loggedIn: sessionStorage.getItem("access-token") == null ? false : true
-        });
+         });
     }
-
+    /**
+   * Event handler called when the user clicks outside the modal or intends to close the modal 
+   * @memberof Header
+   */
     closeModalHandler = () => {
         this.setState({ modalIsOpen: false });
     }
-
+     /**
+   * Event handler called when the user tries to navigate to different tabs
+   * @memberof Header
+   */
     tabChangeHandler = (event, value) => {
         this.setState({ value });
     }
+    /**
+   * Event handler called when the contactno text field is changed by the user in Login form
+   * @param event defualt parameter for onChange
+   * @memberof Header (Login/Signup modal)
+   */
+    inputContactnoChangeHandler = event => {
+    let currentLoginFormValues = { ...this.state.loginFormUserValues };
+    currentLoginFormValues.contactno = event.target.value;
+    this.setState({ loginFormUserValues: currentLoginFormValues });
+   };
 
+  /**
+   * Event handler called when the password text field is changed by the user in Login form
+   * @param event defualt parameter for onChange
+   * @memberof Header (Login/Signup modal)
+   */
+    inputLoginPasswordChangeHandler = event => {
+    let currentLoginFormValues = { ...this.state.loginFormUserValues };
+    currentLoginFormValues.loginPassword = event.target.value;
+    this.setState({ loginFormUserValues: currentLoginFormValues });
+  };
+  /**
+   * Event handler called when the firstname text field is changed by the user in Signup form
+   * @param event defualt parameter for onChange
+   * @memberof Header (Login/Signup modal)
+   */
+    inputFirstNameChangeHandler = event => {
+    let currentSignupFormValues = { ...this.state.signupFormUserValues };
+    currentSignupFormValues.firstname = event.target.value;
+    this.setState({ signupFormUserValues: currentSignupFormValues });
+};
 
+/**
+   * Event handler called when the lastname text field is changed by the user in Signup form
+   * @param event defualt parameter for onChange
+   * @memberof Header (Login/Signup modal)
+   */
+    inputLastNameChangeHandler = event => {
+    let currentSignupFormValues = { ...this.state.signupFormUserValues };
+    currentSignupFormValues.lastname = event.target.value;
+    this.setState({ signupFormUserValues: currentSignupFormValues });
+};
 
+/**
+   * Event handler called when the email text field is changed by the user in Signup form
+   * @param event defualt parameter for onChange
+   * @memberof Header (Login/Signup modal)
+   */
+    inputEmailChangeHandler = event => {
+    let currentSignupFormValues = { ...this.state.signupFormUserValues };
+    currentSignupFormValues.email = event.target.value;
+    this.setState({ signupFormUserValues: currentSignupFormValues });
+};
+
+/**
+   * Event handler called when the password text field is changed by the user in Signup form
+   * @param event defualt parameter for onChange
+   * @memberof Header (Login/Signup modal)
+   */
+    inputRegisterPasswordChangeHandler = event => {
+    let currentSignupFormValues = { ...this.state.signupFormUserValues };
+    currentSignupFormValues.registerPassword = event.target.value;
+    this.setState({ signupFormUserValues: currentSignupFormValues });
+};
+
+/**
+   * Event handler called when the contact text field is changed by the user in Signup form
+   * @param event defualt parameter for onChange
+   * @memberof Header (Login/Signup modal)
+   */
+    inputContactChangeHandler  = event => {
+    let currentSignupFormValues = { ...this.state.signupFormUserValues };
+    currentSignupFormValues.contact = event.target.value;
+    this.setState({ signupFormUserValues: currentSignupFormValues });
+};
+
+loginClickHandler = () => {
+    
+    let testcontactno= "1234"
+    //this.state.loginFormUserValues.contactno;
+    let testpassword="1234"
+    //this.state.loginFormUserValues.loginPassword;
+    let access_token = "8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784"
+
+    // clearing the error message; based on the validation of user input values
+    this.setState({
+      loginErrorMsg: ""
+    });
+
+    // finding the class names for the contactno and password validation messages - to be displayed or not
+    let contactno_validation_classname = UtilsUI.findValidationMessageClassname(
+      this.state.loginFormUserValues.contactno,
+      Constants.ValueTypeEnum.FORM_FIELD
+    );
+    let loginPassword_validation_classname = UtilsUI.findValidationMessageClassname(
+      this.state.loginFormUserValues.loginPassword,
+      Constants.ValueTypeEnum.FORM_FIELD
+    );
+
+    // setting the class names for the contactno and password validation messages - to be displayed or not
+    let currentLoginFormValidationClassNames = {
+      ...this.state.loginFormValidationClassNames
+    };
+    currentLoginFormValidationClassNames.contactno = contactno_validation_classname;
+    currentLoginFormValidationClassNames.loginPassword = loginPassword_validation_classname;
+    this.setState({
+      loginFormValidationClassNames: currentLoginFormValidationClassNames
+    });
+
+    // validating user values only when both the fields (contactno and password) are entered by the user
+    if (
+      !Utils.isAnyValueOfObjectUndefinedOrNullOrEmpty(
+        this.state.loginFormUserValues
+      )
+    ) {
+      // setting the login error message if the credentials do not match to the values of the variables defined above
+      if (
+        this.state.loginFormUserValues.contactno !== testcontactno ||
+        this.state.loginFormUserValues.loginPassword !== testpassword
+      ) {
+        this.setState({
+          loginErrorMsg: Constants.LOGIN_CREDENTIALS_ERROR_MSG
+        });
+        // setting access-token and redirecting the user to the home page if the credentials match to the values of the variables defined above
+      } else {
+        sessionStorage.setItem("access-token", access_token);
+        //this.props.history.push({
+         // pathname: "/login/"
+         ReactDOM.render(<Login/>,document.getElementById("root"));
+        //});
+      }
+    }
+};
+    /*
+        let dataLogin = null;
+        let xhrLogin = new XMLHttpRequest();
+        let that = this;
+        xhrLogin.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                sessionStorage.setItem("uuid", JSON.parse(this.responseText).id);
+                sessionStorage.setItem("access-token", xhrLogin.getResponseHeader("access-token"));
+
+                that.setState({
+                    loggedIn: true
+                });
+
+                that.closeModalHandler();
+            }
+        });
+
+        xhrLogin.open("POST", this.props.baseUrl + "auth/login");
+        xhrLogin.setRequestHeader("Authorization", "Basic " + window.btoa(this.state.username + ":" + this.state.loginPassword));
+        xhrLogin.setRequestHeader("Content-Type", "application/json");
+        xhrLogin.setRequestHeader("Cache-Control", "no-cache");
+        xhrLogin.send(dataLogin);
+        
+    }*/
+    /* Second  way of making API call */
     /**
    * Function called before the render method
    * @memberof Header
    */
-  /*
-  componentDidMount() {
+  /*componentDidMount() {
     this.getUserInformation();
-  }*/
+  }
 
   /**
    * Function to get all the information about the currently logged-in user
    * @memberof Header
    */
-  /*
-   getUserInformation = () => {
+ /* getUserInformation = () => {
     if (
       !Utils.isUndefinedOrNullOrEmpty(sessionStorage.getItem("access-token"))
     ) {
@@ -224,42 +367,51 @@ class Header extends Component {
     }
   };*/
 
-    /*loginClickHandler = () => {
-        this.state.contactno === "" ? this.setState({ contactnoRequired: "dispBlock" }) : this.setState({ contactnoRequired: "dispNone" });
-        this.state.loginPassword === "" ? this.setState({ loginPasswordRequired: "dispBlock" }) : this.setState({ loginPasswordRequired: "dispNone" });
+ 
 
-        let dataLogin = null;
-        let xhrLogin = new XMLHttpRequest();
-        let that = this;
-        xhrLogin.addEventListener("readystatechange", function () {
-            if (this.readyState === 4) {
-                sessionStorage.setItem("uuid", JSON.parse(this.responseText).id);
-                sessionStorage.setItem("access-token", xhrLogin.getResponseHeader("access-token"));
+    /**
+   * Function called before the render method
+   * @memberof Header
+   */
+   // componentDidMount() {
+        //this.signupNewCustomer();
+        //this.loginSignedupCustomer();
+  //  }       
 
-                that.setState({
-                    loggedIn: true
-                });
-
-                that.closeModalHandler();
-            }
+/*
+    signupNewCustomer = () => {
+        let dataSignup = JSON.stringify({
+            "contact_number":this.state.contact,
+            "email_address": this.state.email,
+            "first_name": this.state.firstname,
+            "last_name": this.state.lastname,
+            "password": this.state.registerPassword
         });
+         {
+          const requestUrl = "http://localhost:8080/api/customer/signup";
+          const that = this;
+          Utils.makeApiCall(
+            requestUrl,
+            null,
+            dataSignup,
+            Constants.ApiRequestTypeEnum.POST,
+            null,
+            responseText => {
+              
+                that.setState({
+                    signupSuccess: true
+                });
+              sessionStorage.setItem(
+                "user-details",
+                JSON.parse(responseText).data.username
+              );
+            },
+            () => {}
+          );
+        }
+      };
 
-        xhrLogin.open("POST", this.props.baseUrl + "auth/login");
-        xhrLogin.setRequestHeader("Authorization", "Basic " + window.btoa(this.state.username + ":" + this.state.loginPassword));
-        xhrLogin.setRequestHeader("Content-Type", "application/json");
-        xhrLogin.setRequestHeader("Cache-Control", "no-cache");
-        xhrLogin.send(dataLogin);
-    }*/
-
-    inputContactnoChangeHandler = (e) => {
-        this.setState({ contactno: e.target.value });
-    }
-
-    inputLoginPasswordChangeHandler = (e) => {
-        this.setState({ loginPassword: e.target.value });
-    }
-
-    /*signupClickHandler = () => {
+   /* signupNewCustomer = () => {
         this.state.firstname === "" ? this.setState({ firstnameRequired: "dispBlock" }) : this.setState({ firstnameRequired: "dispNone" });
         this.state.lastname === "" ? this.setState({ lastnameRequired: "dispBlock" }) : this.setState({ lastnameRequired: "dispNone" });
         this.state.email === "" ? this.setState({ emailRequired: "dispBlock" }) : this.setState({ emailRequired: "dispNone" });
@@ -267,10 +419,10 @@ class Header extends Component {
         this.state.contact === "" ? this.setState({ contactRequired: "dispBlock" }) : this.setState({ contactRequired: "dispNone" });
 
         let dataSignup = JSON.stringify({
+            "contact_number":this.state.contact,
             "email_address": this.state.email,
             "first_name": this.state.firstname,
             "last_name": this.state.lastname,
-            "mobile_number": this.state.contact,
             "password": this.state.registerPassword
         });
 
@@ -279,39 +431,56 @@ class Header extends Component {
         xhrSignup.addEventListener("readystatechange", function () {
             if (this.readyState === 4) {
                 that.setState({
-                    registrationSuccess: true
+                    signupSuccess: true
                 });
             }
         });
 
-        xhrSignup.open("POST", this.props.baseUrl + "signup");
+        xhrSignup.open("POST",  "http:/localhost:8080/api/customer/signup");
         xhrSignup.setRequestHeader("Content-Type", "application/json");
-        xhrSignup.setRequestHeader("Cache-Control", "no-cache");
+        //xhrSignup.setRequestHeader("Cache-Control", "no-cache");
         xhrSignup.send(dataSignup);
-    }*/
-
-    inputFirstNameChangeHandler = (e) => {
-        this.setState({ firstname: e.target.value });
-
-
     }
+*/
+ 
+     signupNewCustomer = () => {
+    
+    // clearing the error message; based on the validation of user input values
+    this.setState({
+      signupErrorMsg: ""
+    });
 
-    inputLastNameChangeHandler = (e) => {
-        this.setState({ lastname: e.target.value });
-    }
+    // finding the class names for the contactno,email, firstname and password validation messages - to be displayed or not
+    let contact_validation_classname = UtilsUI.findValidationMessageClassname(
+      this.state.signupFormUserValues.contact,
+      Constants.ValueTypeEnum.FORM_FIELD
+    );
+    let email_validation_classname = UtilsUI.findValidationMessageClassname(
+        this.state.signupFormUserValues.email,
+        Constants.ValueTypeEnum.FORM_FIELD
+      );
+    let firstname_validation_classname = UtilsUI.findValidationMessageClassname(
+        this.state.signupFormUserValues.firstname,
+        Constants.ValueTypeEnum.FORM_FIELD
+      );
+    let registerPassword_validation_classname = UtilsUI.findValidationMessageClassname(
+      this.state.signupFormUserValues.registerPassword,
+      Constants.ValueTypeEnum.FORM_FIELD
+    );
 
-    inputEmailChangeHandler = (e) => {
-        this.setState({ email: e.target.value });
-    }
+    // setting the class names for the contactno,email, firstname and password validation messages - to be displayed or not
+    let currentSignupFormValidationClassNames = {...this.state.signupFormValidationClassNames };
+    currentSignupFormValidationClassNames.contact = contact_validation_classname;
+    currentSignupFormValidationClassNames.email = email_validation_classname;
+    currentSignupFormValidationClassNames.firstname = firstname_validation_classname;
+    currentSignupFormValidationClassNames.registerPassword = registerPassword_validation_classname;
+    this.setState({
+        signupFormValidationClassNames: currentSignupFormValidationClassNames
+    });
 
-    inputRegisterPasswordChangeHandler = (e) => {
-        this.setState({ registerPassword: e.target.value });
-    }
-
-    inputContactChangeHandler = (e) => {
-        this.setState({ contact: e.target.value });
-    }
-
+    
+};
+    
     render() {
 
         const { classes } = this.props;
@@ -370,7 +539,7 @@ class Header extends Component {
                                 <FormControl required>
                                     <InputLabel htmlFor="contactno">Contact No</InputLabel>
                                     <Input id="contactno" type="text" contactno={this.state.contactno} onChange={this.inputContactnoChangeHandler} />
-                                    <FormHelperText className={this.state.contactnoRequired}>
+                                    <FormHelperText className={this.state.loginFormValidationClassNames.contactno}>
                                         <span className="red">required</span>
                                     </FormHelperText>
                                 </FormControl>
@@ -378,7 +547,7 @@ class Header extends Component {
                                 <FormControl required>
                                     <InputLabel htmlFor="loginPassword">Password</InputLabel>
                                     <Input id="loginPassword" type="password" loginpassword={this.state.loginPassword} onChange={this.inputLoginPasswordChangeHandler} />
-                                    <FormHelperText className={this.state.loginPasswordRequired}>
+                                    <FormHelperText className={this.state.loginFormValidationClassNames.loginPassword}>
                                         <span className="red">required</span>
                                     </FormHelperText>
                                 </FormControl>
@@ -392,7 +561,7 @@ class Header extends Component {
                                 <FormControl required>
                                     <InputLabel htmlFor="firstname">First Name</InputLabel>
                                     <Input id="firstname" type="text" firstname={this.state.firstname} onChange={this.inputFirstNameChangeHandler} />
-                                    <FormHelperText className={this.state.firstnameRequired}>
+                                    <FormHelperText className={this.state.signupFormValidationClassNames.firstname}>
                                         <span className="red">required</span>
                                     </FormHelperText>
                                 </FormControl>
@@ -405,7 +574,7 @@ class Header extends Component {
                                 <FormControl required>
                                     <InputLabel htmlFor="email">Email</InputLabel>
                                     <Input id="email" type="text" email={this.state.email} onChange={this.inputEmailChangeHandler} />
-                                    <FormHelperText className={this.state.emailRequired}>
+                                    <FormHelperText className={this.state.signupFormValidationClassNames.email}>
                                         <span className="red">required</span>
                                     </FormHelperText>
                                 </FormControl>
@@ -413,7 +582,7 @@ class Header extends Component {
                                 <FormControl required>
                                     <InputLabel htmlFor="registerPassword">Password</InputLabel>
                                     <Input id="registerPassword" type="password" registerpassword={this.state.registerPassword} onChange={this.inputRegisterPasswordChangeHandler} />
-                                    <FormHelperText className={this.state.registerPasswordRequired}>
+                                    <FormHelperText className={this.state.signupFormValidationClassNames.registerPassword}>
                                         <span className="red">required</span>
                                     </FormHelperText>
                                 </FormControl>
@@ -421,13 +590,13 @@ class Header extends Component {
                                 <FormControl required>
                                     <InputLabel htmlFor="contact">Contact No.</InputLabel>
                                     <Input id="contact" type="text" contact={this.state.contact} onChange={this.inputContactChangeHandler} />
-                                    <FormHelperText className={this.state.contactRequired}>
+                                    <FormHelperText className={this.state.signupFormValidationClassNames.contact}>
                                         <span className="red">required</span>
                                     </FormHelperText>
                                 </FormControl>
                                 <br /><br />
 
-                                <Button variant="contained" color="primary" onClick={this.signupClickHandler}>SIGNUP</Button>
+                                <Button variant="contained" color="primary" onClick={this.signupNewCustomer}>SIGNUP</Button>
                             </TabContainer>
                         }
                     </Modal>

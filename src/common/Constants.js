@@ -20,11 +20,6 @@ export const DisplayClassname = Object.freeze({
   DISPLAY_BLOCK: "dispBlock"
 });
 
-export const HeartButtonAction = Object.freeze({
-  LIKE: 1,
-  UNLIKE: 0
-});
-
 /* constants */
 
 export const LOGIN_CREDENTIALS_ERROR_MSG = "Invalid credentials!";

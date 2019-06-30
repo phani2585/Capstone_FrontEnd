@@ -20,39 +20,6 @@ export const findValidationMessageClassname = (value, type) => {
   return "";
 };
 
-/**
- * Function to like or unlike an image post
- * @param imagePostIndex index of the image post clicked on
- * @param actionType type of the action to be taken on the image post
- */
-export const likeOrUnlikeImage = (imageData, imagePostIndex, actionType) => {
-  if (
-    !Utils.isUndefinedOrNull(imageData) &&
-    !Utils.isUndefinedOrNullOrEmpty(
-      imagePostIndex && !Utils.isUndefinedOrNullOrEmpty(actionType)
-    )
-  ) {
-    switch (actionType) {
-      case Constants.HeartButtonAction.LIKE:
-        imageData[imagePostIndex].like = true;
-        imageData[imagePostIndex].likes.count = Utils.isUndefinedOrNull(
-          imageData[imagePostIndex].likes.count
-        )
-          ? 1
-          : Number(imageData[imagePostIndex].likes.count) + 1;
-        break;
-      case Constants.HeartButtonAction.UNLIKE:
-        imageData[imagePostIndex].like = false;
-        imageData[imagePostIndex].likes.count =
-          Number(imageData[imagePostIndex].likes.count) - 1;
-        break;
-      default:
-        return;
-    }
-    return imageData;
-  }
-  return null;
-};
 
 /**
  * Function to add a user comment to an image
