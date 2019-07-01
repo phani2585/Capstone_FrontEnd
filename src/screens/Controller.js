@@ -10,7 +10,7 @@ import Profile from "./profile/Profile";
  * @extends {Component}
  */
 class Controller extends Component {
-  baseUrl = "https:/localhost:8080/api";
+  baseUrl = "http://localhost:8080/api";
 
   render() {
     return (

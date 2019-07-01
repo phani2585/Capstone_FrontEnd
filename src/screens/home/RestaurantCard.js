@@ -18,10 +18,14 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
     card:{
-        maxwidth:345,
+        boxShadow:20,
+        width:350,
+        
+        
     },
     media: {
-      height: 150,
+        width:350,
+      height: 150
     },
   });
   

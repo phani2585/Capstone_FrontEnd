@@ -1,10 +1,5 @@
 
-  .cardStyle {
-    display: 'flex';
-    justify-content: 'center';
-    margin-top: '2%';
-    
-  } 
+  
   #star-icon {
     color:white;
 }
@@ -31,3 +26,6 @@ button#left-button {
     width:'450px';
     height:'200px';
 }*/
+.MuiPaper-root.MuiPaper-elevation1.MuiCard-root.makeStyles-card-176.MuiPaper-rounded {
+    height: auto;
+}
