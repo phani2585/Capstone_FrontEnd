@@ -123,6 +123,8 @@ class Header extends Component {
         value: 0,//Initial value for tab container is set to '0'
         signupSuccess: false,//signup status is false
         //loggedIn: sessionStorage.getItem("access-token") == null ? false : true,//Logged in status is null if there is no accesstoken in sessionstorage
+        signupData: [],
+        signupStatus: []
     };
 
     /**
@@ -316,7 +318,7 @@ class Header extends Component {
             }
         });
 
-        xhrLogin.open("POST",  this.props.baseUrl + "/customer/login");
+        xhrLogin.open("POST", "http://localhost/8080/api/customer/login");
         xhrLogin.setRequestHeader("Authorization", "Basic " + window.btoa(this.state.loginFormUserValues.contactno + ":" + this.state.loginFormUserValues.loginPassword));
         xhrLogin.setRequestHeader("Content-Type", "application/json");
         xhrLogin.setRequestHeader("Cache-Control", "no-cache");
@@ -333,7 +335,8 @@ class Header extends Component {
 
         // clearing the error message; based on the validation of user input values
         this.setState({
-            signupErrorMsg: ""
+            signupErrorMsg: "",
+
         });
 
         // finding the class names for the contactno,email, firstname and password validation messages - to be displayed or not
@@ -360,9 +363,16 @@ class Header extends Component {
         currentSignupFormValidationClassNames.email = email_validation_classname;
         currentSignupFormValidationClassNames.firstname = firstname_validation_classname;
         currentSignupFormValidationClassNames.registerPassword = registerPassword_validation_classname;
+
         this.setState({
             signupFormValidationClassNames: currentSignupFormValidationClassNames
+
         });
+
+        /* (this.state.signupFormUserValues.contact.length!==10)
+         ? this.setState({ signupErrorMsg:Constants.VALIDATE_CONTACT_ERROR_MSG})
+         : this.setState({ signupErrorMsg:null});*/
+
         let dataSignup = {
             "contact_number": this.state.signupFormUserValues.contact,
             "email_address": this.state.signupFormUserValues.email,
@@ -370,24 +380,29 @@ class Header extends Component {
             "last_name": this.state.signupFormUserValues.lastname,
             "password": this.state.signupFormUserValues.registerPassword
         };
-        let requestHeaderObj = { "Content-Type": "application/json" };
-        {
-            const requestUrl = this.props.baseUrl + "/customer/signup";
-            const that = this;
-            Utils.makeApiCall(
-                requestUrl,
-                null,
-                dataSignup,
-                Constants.ApiRequestTypeEnum.POST,
-                requestHeaderObj,
-                responseText => {
-                    that.setState({
-                        signupSuccess: true
-                    });
-                },
-                () => { }
-            );
-        }
+
+        const requestUrl = "http://localhost:8080/api/customer/signup";
+        const requestHeadersObj= {"Content-Type": "application/json"};
+        const that = this;
+        Utils.makeApiCall(
+            requestUrl,
+            null,
+            dataSignup,
+            Constants.ApiRequestTypeEnum.GET,
+            requestHeadersObj,
+            responseText => {
+                that.setState(
+                    {
+                        signupSuccess:true
+                    },
+                    function () {
+                        
+                    }
+                );
+            },
+            () => { }
+        );
+
     };
 
     /**
@@ -488,6 +503,7 @@ class Header extends Component {
                                     <FormHelperText className={this.state.signupFormValidationClassNames.email}>
                                         <span className="red">required</span>
                                     </FormHelperText>
+
                                 </FormControl>
                                 <br /><br />
                                 <FormControl required>
@@ -502,12 +518,16 @@ class Header extends Component {
                                     <InputLabel htmlFor="contact">Contact No.</InputLabel>
                                     <Input id="contact" type="text" contact={this.state.contact} onChange={this.inputContactChangeHandler} />
                                     <FormHelperText className={this.state.signupFormValidationClassNames.contact}>
-                                        <span className="red">required</span>
+
+                                        {Utils.isUndefinedOrNullOrEmpty(this.state.signupErrorMsg) ? (<span className="red">required</span>) : (<span className="red">{this.state.signupErrorMsg}</span>)}
+
                                     </FormHelperText>
+
                                 </FormControl>
                                 <br /><br />
 
                                 <Button variant="contained" color="primary" onClick={this.signupNewCustomer}>SIGNUP</Button>
+
                             </TabContainer>
                         }
                     </Modal>

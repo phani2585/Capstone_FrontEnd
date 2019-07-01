@@ -23,3 +23,4 @@ export const DisplayClassname = Object.freeze({
 /* constants */
 
 export const LOGIN_CREDENTIALS_ERROR_MSG = "Invalid credentials!";
+export const VALIDATE_CONTACT_ERROR_MSG ="Invalid Contact";
