@@ -4,6 +4,7 @@ import * as Utils from "../../common/Utils";
 import * as UtilsUI from "../../common/UtilsUI";
 import * as Constants from "../../common/Constants";
 import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
 import Modal from 'react-modal';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -17,6 +18,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import accountCircle from '../../assets/icon/accountCircle.svg';
 import FastFoodIcon from '@material-ui/icons/Fastfood';
 import SearchIcon from '@material-ui/icons/Search';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 // custom styles for upload modal
@@ -67,6 +70,7 @@ const styles = {
         width: "80%"
     }
 };
+ 
 
 /**
  * Class component for the header
@@ -122,47 +126,10 @@ class Header extends Component {
         menuIsDroppedDown: false,//Menu in login form is not dropped down
         value: 0,//Initial value for tab container is set to '0'
         signupSuccess: false,//signup status is false
+        snackbarIsopen: false,
+        snackbarclose:true,
         //loggedIn: sessionStorage.getItem("access-token") == null ? false : true,//Logged in status is null if there is no accesstoken in sessionstorage
-        signupData: [],
-        signupStatus: []
-    };
     
-    /**
-    * Function called before the render method
-    * @memberof Header
-    */
-    componentDidMount() {
-        this.getRestaurantByRestaurantName();
-    }
-
-    /**
-    * Function to get restaurant info by restaurant name
-    * @memberof Header
-    */
-    getRestaurantByRestaurantName = () => {
-        let requestparamsObj = { 'restaurant_name': 'Lion Heart' }
-        const requestUrl = "http://localhost:8080/api/restaurant/name/{restaurant_name}";
-        const that = this;
-        Utils.makeApiCall(
-            requestUrl,
-            requestparamsObj,
-            null,
-            Constants.ApiRequestTypeEnum.GET,
-            null,
-            responseText => {
-                that.setState(
-                    {
-                        restaurantDataByName: JSON.parse(responseText).restaurants
-                    },
-                    function () {
-                        that.setState({
-                            isRestaurantDataLoaded: true
-                        });
-                    }
-                );
-            },
-            () => { }
-        );
     };
 
     /**
@@ -337,9 +304,9 @@ class Header extends Component {
         // clearing the error message; based on the validation of user input values
         this.setState({
             signupErrorMsg: "",
-
+             
         });
-
+        
         // finding the class names for the contactno,email, firstname and password validation messages - to be displayed or not
         let contact_validation_classname = UtilsUI.findValidationMessageClassname(
             this.state.signupFormUserValues.contact,
@@ -366,8 +333,8 @@ class Header extends Component {
         currentSignupFormValidationClassNames.registerPassword = registerPassword_validation_classname;
 
         this.setState({
-            signupFormValidationClassNames: currentSignupFormValidationClassNames
-
+            signupFormValidationClassNames: currentSignupFormValidationClassNames,
+            
         });
 
         /* (this.state.signupFormUserValues.contact.length!==10)
@@ -393,7 +360,9 @@ class Header extends Component {
                 requestHeaderObj,
                 responseText => {
                     that.setState({
-                        signupSuccess: true
+                        signupSuccess: true,
+                        snackbarIsopen:true,
+                        
                     });
                 },
                 () => { }
@@ -401,6 +370,16 @@ class Header extends Component {
          }
 
     };
+
+    snackbarCloseHandler = (e) => {
+        this.setState({ snackbarIsopen:false });
+    }
+    searchValueChangeHandler = (e) => {
+        this.setState({ searchValue: e.target.value });
+    }
+    
+
+  
 
     /**
   * Function called when the component is rendered
@@ -429,7 +408,7 @@ class Header extends Component {
                     </div>
                     <div className="search-text-input">
                         <Input
-                            //onChange={this.props.searchRestaurantByRestaurantName.bind(this)}
+                            onChange={this.searchValueChangeHandler}
                             className={classes.searchInput}
                             //onClick={this.UnderLineColourChangeHandler}
                             placeholder="Search by Restaurant Name" id="search-input" fullWidth />
@@ -515,15 +494,22 @@ class Header extends Component {
                                     <InputLabel htmlFor="contact">Contact No.</InputLabel>
                                     <Input id="contact" type="text" contact={this.state.contact} onChange={this.inputContactChangeHandler} />
                                     <FormHelperText className={this.state.signupFormValidationClassNames.contact}>
-
-                                        {Utils.isUndefinedOrNullOrEmpty(this.state.signupErrorMsg) ? (<span className="red">required</span>) : (<span className="red">{this.state.signupErrorMsg}</span>)}
-
+                                        <span className="red">required</span>
                                     </FormHelperText>
 
                                 </FormControl>
                                 <br /><br />
 
                                 <Button variant="contained" color="primary" onClick={this.signupNewCustomer}>SIGNUP</Button>
+                                <Snackbar
+                                anchorOrigin={{vertical: 'bottom',horizontal: 'left',}}
+                                open={this.state.snackbarIsopen}
+                                autoHideDuration={6000}
+                                onClose={this.snackbarCloseHandler}
+                                ContentProps={{'aria-describedby': 'message-id',}}
+                                message={<span id="message-id">Registered successfully! Please login now!</span>}
+                                />
+                                
 
                             </TabContainer>
                         }

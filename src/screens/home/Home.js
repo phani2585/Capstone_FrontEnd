@@ -27,44 +27,18 @@ const styles = theme => ({
 
 class Home extends Component {
 
-  constructor() {
+ /* constructor() {
     super();
-    this.searchRestaurantByRestaurantName = this.searchRestaurantByRestaurantName.bind(this);
-  }
+    //this.searchRestaurantByRestaurantName = this.searchRestaurantByRestaurantName.bind(this);
+    //this.getRestaurantByRestaurantName = this.getRestaurantByRestaurantName.bind(this);
+  }*/
   state = {
     isRestaurantDataLoaded: false,
     restaurantData: [], // array containing all the restaurants info available
+    restaurantDataByName:[],
     //isDataLoaded: true,
-    filteredRestaurantData: [], // array containing all the restaurants info filtered using search box
-    currentSearchValue: "",
-  };
-
-  /**
-   * Function to search a restaurant by its name; called when a value is entered by a user in the search box
-   * @param event default parameter on which the event is called
-   * @memberof Home
-   */
-  searchRestaurantByRestaurantName = event => {
-    let currRestaurantData = [...this.state.restaurantData];
-    const searchValue = event.target.value;
-    if (!Utils.isEmpty(searchValue)) {
-      let searchResults = [];
-      for (var restaurant in currRestaurantData) {
-        if (
-          !Utils.isUndefinedOrNull(currRestaurantData[restaurant].restaurant_name)
-            .toLowerCase()
-            .includes(searchValue.toLowerCase())
-        ) {
-          searchResults.push(currRestaurantData[restaurant]);
-        }
-      }
-      this.setState({
-        filteredRestaurantData: searchResults,
-        currentSearchValue: searchValue
-      });
-    } else {
-      this.setState({ currentSearchValue: searchValue });
-    }
+    filteredRestaurantData: []// array containing all the restaurants info filtered using search box
+    
   };
 
   /**
@@ -73,37 +47,70 @@ class Home extends Component {
    */
   componentDidMount() {
     this.getAllRestaurantData();
+    this.getRestaurantByRestaurantName();
   }
 
-  /**
+/**
   * Function to get all the restaurant data on the home page
   * @memberof Home
   */
-  getAllRestaurantData = () => {
-    const requestUrl = this.props.baseUrl + "/restaurant";
-    const that = this;
-    Utils.makeApiCall(
+ getAllRestaurantData = () => {
+  const requestUrl = this.props.baseUrl + "/restaurant";
+  const that = this;
+  Utils.makeApiCall(
+    requestUrl,
+    null,
+    null,
+    Constants.ApiRequestTypeEnum.GET,
+    null,
+    responseText => {
+      that.setState(
+        {
+          restaurantData: JSON.parse(responseText).restaurants
+        },
+        function () {
+          that.setState({
+            isRestaurantDataLoaded: true
+          });
+        }
+      );
+    },
+    () => { }
+  );
+};
+
+ /** 
+ * Function to get restaurant info by restaurant name; called when a value is entered by a user in the search box
+ * @param event default parameter on which the event is called
+ * @memberof Home
+ */
+ getRestaurantByRestaurantName = () => {
+   //this.setState({ searchValue : event.target.value });
+  let requestparamsObj = { 'restaurant_name': 'Lion Heart' }
+  const requestUrl = "http://localhost:8080/api/restaurant/name/{restaurantName}";
+  const that = this;
+  Utils.makeApiCall(
       requestUrl,
-      null,
+      requestparamsObj,
       null,
       Constants.ApiRequestTypeEnum.GET,
       null,
       responseText => {
-        that.setState(
-          {
-            restaurantData: JSON.parse(responseText).restaurants
-          },
-          function () {
-            that.setState({
-              isRestaurantDataLoaded: true
-            });
-          }
-        );
+          that.setState(
+              {
+                  restaurantDataByName: JSON.parse(responseText).restaurants
+              },
+              function () {
+                  that.setState({
+                      isRestaurantDataLoaded: true
+                  });
+              }
+          );
       },
       () => { }
-    );
-  };
-
+  );
+};
+  
 
   /**
    * Function called when the component is rendered

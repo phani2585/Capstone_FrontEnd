@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 
 
+
 /**
  * Functional component for displaying an restaurant card
  * @param props properties passed by parent component to child component
@@ -19,9 +20,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
     card:{
         boxShadow:20,
-        width:350,
-        
-        
+        width:350,     
     },
     media: {
         width:350,
