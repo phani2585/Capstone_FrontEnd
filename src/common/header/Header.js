@@ -92,7 +92,7 @@ class Header extends Component {
         this.signupNewCustomer = this.signupNewCustomer.bind(this);
     }
 
-    state = {
+        state = {
         loginFormUserValues: {
             // object containing values entered by the user in the text fields of the login form
             contactno: "",
@@ -126,7 +126,7 @@ class Header extends Component {
         signupData: [],
         signupStatus: []
     };
-
+    
     /**
     * Function called before the render method
     * @memberof Header
@@ -318,11 +318,12 @@ class Header extends Component {
             }
         });
 
-        xhrLogin.open("POST", "http://localhost/8080/api/customer/login");
+        xhrLogin.open("POST",  "http://localhost:8080/api/customer/login");
         xhrLogin.setRequestHeader("Authorization", "Basic " + window.btoa(this.state.loginFormUserValues.contactno + ":" + this.state.loginFormUserValues.loginPassword));
         xhrLogin.setRequestHeader("Content-Type", "application/json");
         xhrLogin.setRequestHeader("Cache-Control", "no-cache");
         xhrLogin.send(dataLogin);
+
 
     };
 
@@ -380,28 +381,24 @@ class Header extends Component {
             "last_name": this.state.signupFormUserValues.lastname,
             "password": this.state.signupFormUserValues.registerPassword
         };
-
-        const requestUrl = "http://localhost:8080/api/customer/signup";
-        const requestHeadersObj= {"Content-Type": "application/json"};
-        const that = this;
-        Utils.makeApiCall(
-            requestUrl,
-            null,
-            dataSignup,
-            Constants.ApiRequestTypeEnum.GET,
-            requestHeadersObj,
-            responseText => {
-                that.setState(
-                    {
-                        signupSuccess:true
-                    },
-                    function () {
-                        
-                    }
-                );
-            },
-            () => { }
-        );
+        let requestHeaderObj = { "Content-Type": "application/json" };
+        {
+            const requestUrl = "http://localhost:8080/api/customer/signup";
+            const that = this;
+            Utils.makeApiCall(
+                requestUrl,
+                null,
+                dataSignup,
+                Constants.ApiRequestTypeEnum.POST,
+                requestHeaderObj,
+                responseText => {
+                    that.setState({
+                        signupSuccess: true
+                    });
+                },
+                () => { }
+            );
+         }
 
     };
 
