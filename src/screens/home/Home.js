@@ -37,8 +37,8 @@ class Home extends Component {
     restaurantData: [], // array containing all the restaurants info available
     restaurantDataByName:[],
     //isDataLoaded: true,
-    filteredRestaurantData: []// array containing all the restaurants info filtered using search box
-    
+    filteredRestaurantData: [],// array containing all the restaurants info filtered using search box
+    restaurantName: ""
   };
 
   /**
@@ -86,12 +86,12 @@ class Home extends Component {
  */
  getRestaurantByRestaurantName = () => {
    //this.setState({ searchValue : event.target.value });
-  //let requestparamsObj =  {"restaurant_name":"Lion Heart"};
-  const requestUrl = "http://localhost:8080/api/restaurant/name/Lion Heart";
+  let requestparamsObj =  {"restaurant_name":"Lion Heart"};
+  const requestUrl = "http://localhost:8080/api/restaurant/name/"+ this.state.restaurantName;
   const that = this;
   Utils.makeApiCall(
       requestUrl,
-      null,
+      requestparamsObj,
       null,
       Constants.ApiRequestTypeEnum.GET,
       null,

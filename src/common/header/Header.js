@@ -96,6 +96,7 @@ class Header extends Component {
         this.inputContactChangeHandler = this.inputContactChangeHandler.bind(this);
         this.signupNewCustomer = this.signupNewCustomer.bind(this);
         this.logoutClickHandler = this.logoutClickHandler.bind(this);
+        this.openMenuHandler =this.openMenuHandler.bind(this);
     }
 
         state = {
@@ -130,6 +131,7 @@ class Header extends Component {
         signupSuccess: false,//signup status is false
         loginSnackBarIsOpen: false,
         registerSnackBarIsOpen: false,
+        showUserProfileDropDown: false, // boolean value indicating if the user profile dropdown is open; TRUE for open and FALSE for closed
         signedInUserInfo:[]
         //loggedIn: sessionStorage.getItem("access-token") == null ? false : true,//Logged in status is null if there is no accesstoken in sessionstorage
     
@@ -557,6 +559,7 @@ class Header extends Component {
                     </Modal>
                 </div>
             );
+        }
             
             // user profile icon to be rendered inside the header
         let profileIconButtonToRender = null;
@@ -588,7 +591,7 @@ class Header extends Component {
           );
         }
         
-        }
+        
 
         
         return (
