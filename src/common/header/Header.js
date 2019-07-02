@@ -3,6 +3,7 @@ import './Header.css';
 import * as Utils from "../../common/Utils";
 import * as UtilsUI from "../../common/UtilsUI";
 import * as Constants from "../../common/Constants";
+import { Link } from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import Modal from 'react-modal';
@@ -18,8 +19,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import accountCircle from '../../assets/icon/accountCircle.svg';
 import FastFoodIcon from '@material-ui/icons/Fastfood';
 import SearchIcon from '@material-ui/icons/Search';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
+//import IconButton from '@material-ui/core/IconButton';
+//import CloseIcon from '@material-ui/icons/Close';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 // custom styles for upload modal
@@ -94,6 +95,7 @@ class Header extends Component {
         this.inputRegisterPasswordChangeHandler = this.inputRegisterPasswordChangeHandler.bind(this);
         this.inputContactChangeHandler = this.inputContactChangeHandler.bind(this);
         this.signupNewCustomer = this.signupNewCustomer.bind(this);
+        this.logoutClickHandler = this.logoutClickHandler.bind(this);
     }
 
         state = {
@@ -126,8 +128,9 @@ class Header extends Component {
         menuIsDroppedDown: false,//Menu in login form is not dropped down
         value: 0,//Initial value for tab container is set to '0'
         signupSuccess: false,//signup status is false
-        snackbarIsopen: false,
-        snackbarclose:true,
+        loginSnackBarIsOpen: false,
+        registerSnackBarIsOpen: false,
+        signedInUserInfo:[]
         //loggedIn: sessionStorage.getItem("access-token") == null ? false : true,//Logged in status is null if there is no accesstoken in sessionstorage
     
     };
@@ -266,22 +269,25 @@ class Header extends Component {
         currentLoginFormValidationClassNames.contactno = contactno_validation_classname;
         currentLoginFormValidationClassNames.loginPassword = loginPassword_validation_classname;
         this.setState({
-            loginFormValidationClassNames: currentLoginFormValidationClassNames
+            loginFormValidationClassNames: currentLoginFormValidationClassNames,
+            loginSnackBarIsOpen:true
         });
 
         let dataLogin = null;
         let xhrLogin = new XMLHttpRequest();
         let that = this;
         xhrLogin.addEventListener("readystatechange", function () {
-            if (this.readyState === 4) {
+            if (this.readyState === 4 ) {
+                sessionStorage.setItem("logged-in-username",JSON.parse(this.responseText).first_name);
                 sessionStorage.setItem("uuid", JSON.parse(this.responseText).id);
                 sessionStorage.setItem("access-token", xhrLogin.getResponseHeader("access-token"));
 
                 that.setState({
-                    loggedIn: true
+                    loggedIn: true,
+                    loggedInUserInfo: JSON.parse(this.responseText)
                 });
 
-                that.closeModalHandler();
+                //that.closeModalHandler();
             }
         });
 
@@ -334,7 +340,7 @@ class Header extends Component {
 
         this.setState({
             signupFormValidationClassNames: currentSignupFormValidationClassNames,
-            
+            registerSnackBarIsOpen:true,
         });
 
         /* (this.state.signupFormUserValues.contact.length!==10)
@@ -349,9 +355,10 @@ class Header extends Component {
             "password": this.state.signupFormUserValues.registerPassword
         };
         let requestHeaderObj = { "Content-Type": "application/json" };
-        {
+        
             const requestUrl = "http://localhost:8080/api/customer/signup";
             const that = this;
+            
             Utils.makeApiCall(
                 requestUrl,
                 null,
@@ -359,26 +366,67 @@ class Header extends Component {
                 Constants.ApiRequestTypeEnum.POST,
                 requestHeaderObj,
                 responseText => {
-                    that.setState({
-                        signupSuccess: true,
-                        snackbarIsopen:true,
-                        
-                    });
+                    that.setState(
+                        {
+                            signedInUserInfo: JSON.parse(this.responseText)
+                        },
+                        function () {
+                            that.setState({
+                                
+                                signupSuccess: true,
+                            });
+                        }
+                    );
                 },
-                () => { }
+                responseText => {
+                    that.setState(
+                        {
+                            signInFailedInfo: JSON.parse(this.responseText)
+                        },
+                        function () {
+                            that.setState({
+                                
+                                signupFailed: true,
+                            });
+                        }
+                    );
+                },
             );
-         }
-
+              
     };
 
-    snackbarCloseHandler = (e) => {
-        this.setState({ snackbarIsopen:false });
+
+    loginSnackBarCloseHandler = (e) => {
+        this.setState({ loginSnackBarIsOpen:false });
+    }
+    registerSnackBarCloseHandler = (e) => {
+        this.setState({ registerSnackBarIsOpen:false });
     }
     searchValueChangeHandler = (e) => {
         this.setState({ searchValue: e.target.value });
     }
     
+ /**
+   * Event handler called when the profile icon inside the header is clicked to toggle the user profile dropdown
+   * @memberof Header
+   */
+  openMenuHandler = () => {
+    this.setState({
+      showUserProfileDropDown: !this.state.showUserProfileDropDown
+    });
+  };
 
+  /**
+   * Event handler called when the logout menu item is clicked inside the user profile dropdown to log a user out of the application
+   * @memberof Header
+   */
+  logoutClickHandler = () => {
+    sessionStorage.removeItem("access-token");
+    sessionStorage.removeItem("user-details");
+    this.props.history.push({
+      pathname: "/"
+    });
+  };
   
 
     /**
@@ -501,14 +549,7 @@ class Header extends Component {
                                 <br /><br />
 
                                 <Button variant="contained" color="primary" onClick={this.signupNewCustomer}>SIGNUP</Button>
-                                <Snackbar
-                                anchorOrigin={{vertical: 'bottom',horizontal: 'left',}}
-                                open={this.state.snackbarIsopen}
-                                autoHideDuration={6000}
-                                onClose={this.snackbarCloseHandler}
-                                ContentProps={{'aria-describedby': 'message-id',}}
-                                message={<span id="message-id">Registered successfully! Please login now!</span>}
-                                />
+                               
                                 
 
                             </TabContainer>
@@ -516,25 +557,14 @@ class Header extends Component {
                     </Modal>
                 </div>
             );
-        }
-
-        // user profile icon to be rendered inside the header
-        /*let profileIconButtonToRender = null;
+            
+            // user profile icon to be rendered inside the header
+        let profileIconButtonToRender = null;
         if (this.props.showProfile) {
           profileIconButtonToRender = (
             <div className="header-profile-btn-container">
-              <IconButton
-                key="close"
-                aria-label="Close"
-                onClick={this.profileIconClickHandler}
-                className={classes.profileIconButton}
-              >
-                <img
-                  src={this.state.currentUserDetails.profileImage}
-                  className="user-profile-image"
-                  alt=""
-                />
-              </IconButton>
+              <Button variant="contained" color="default" onClick={this.openMenuHandler} >
+                        <img src={accountCircle} className="accountCircle-logo" alt="accountCircle" />{sessionStorage.getItem("logged-in-username")}</Button>
         
               {this.state.showUserProfileDropDown ? (
                 <div className="user-profile-drop-down">
@@ -557,14 +587,33 @@ class Header extends Component {
             </div>
           );
         }
-        {profileIconButtonToRender} to be placed in Muitheme provider if required
-        */
+        
+        }
+
+        
         return (
             <MuiThemeProvider>
                 <div className="app-header-container">
                     <div className="header-logo-container">{logoToRender}</div>
                     {searchBoxToRender}
                     {loginButtonModalToRender}
+                    {profileIconButtonToRender}
+                    <Snackbar
+                                anchorOrigin={{vertical: 'bottom',horizontal: 'left',}}
+                                open={this.state.registerSnackBarIsOpen}
+                                autoHideDuration={6000}
+                                onClose={this.registerSnackBarCloseHandler}
+                                ContentProps={{'aria-describedby': 'message-id',}}
+                                message={<span id="message-id">Registered successfully! Please login now!</span>}
+                    />
+                    <Snackbar
+                                anchorOrigin={{vertical: 'bottom',horizontal: 'left',}}
+                                open={this.state.loginSnackBarIsOpen}
+                                autoHideDuration={6000}
+                                onClose={this.loginSnackBarCloseHandler}
+                                ContentProps={{'aria-describedby': 'message-id',}}
+                                message={<span id="message-id">Logged in successfully!</span>}
+                    />
                 </div>
             </MuiThemeProvider>
         );

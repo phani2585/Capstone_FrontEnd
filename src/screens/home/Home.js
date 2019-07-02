@@ -86,12 +86,12 @@ class Home extends Component {
  */
  getRestaurantByRestaurantName = () => {
    //this.setState({ searchValue : event.target.value });
-  let requestparamsObj = { 'restaurant_name': 'Lion Heart' }
-  const requestUrl = "http://localhost:8080/api/restaurant/name/{restaurantName}";
+  //let requestparamsObj =  {"restaurant_name":"Lion Heart"};
+  const requestUrl = "http://localhost:8080/api/restaurant/name/Lion Heart";
   const that = this;
   Utils.makeApiCall(
       requestUrl,
-      requestparamsObj,
+      null,
       null,
       Constants.ApiRequestTypeEnum.GET,
       null,
