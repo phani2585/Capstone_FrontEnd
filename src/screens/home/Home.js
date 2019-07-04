@@ -94,6 +94,7 @@ class Home extends Component {
  * @param event default parameter on which the event is called
  * @memberof Home
  */
+/*CHECK this API n complete search Box implemetation*/
  getRestaurantByRestaurantName = () => {
    //this.setState({ searchValue : event.target.value });
   
