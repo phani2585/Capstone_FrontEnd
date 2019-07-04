@@ -25,7 +25,11 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import addressInfo from '../../common/addressInfo';
+import stateInfo from '../../common/stateInfo';
 
 // inline styles for Material-UI components
 const styles = theme => ({
@@ -279,6 +283,25 @@ class Checkout extends Component {
                                 </FormControl>
                                 <br />
                                 
+                                <FormControl required>
+                                    <InputLabel htmlFor="state-dropdown">State</InputLabel>
+
+                                <Select
+                                        
+                                        input={<Input id="state-dropdown" />}
+                                        renderValue={selected => selected}
+                                        value={stateInfo.state_name}
+                                        //onChange={this.selectedStateChangeHandler}
+                                    >
+                                        
+                                        {stateInfo.map(state => (
+                                            <MenuItem key={state.id}>
+                                                {state.state_name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+
+                                    </FormControl>
                                 
                                 <FormControl required>
                                     <InputLabel htmlFor="pincode">Pincode</InputLabel>
