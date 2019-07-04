@@ -99,12 +99,6 @@
     }
 }
 
-  
-  
-  
-  
-  
-  
   .user-profile-drop-down {
     position: absolute;
     right: 16px;
@@ -121,26 +115,5 @@
     cursor: pointer;
   }
     
-.grid-item {
-  margin: 15px;
-}
-  .cardHeader {
-    display:flex;
-    float:flex-start;
-  }
-  .cardContent {
-    display:flex;
-    justify-content: center;
-  }  
-  
-  /* @media (max-width: 992px) {
-    .flexHeader {
-      flex-direction: column;
-    }
-    .flexHeaderNoLink {
-      flex-direction: column;
-    }
-    .headerPadding {
-      height: 64px;
-    }
-  } */
+
+  /* All the css in header  is checked  */
