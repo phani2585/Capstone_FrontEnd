@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Header.css';
-import * as Utils from "../../common/Utils";
+//import * as Utils from "../../common/Utils";
 import * as UtilsUI from "../../common/UtilsUI";
 import * as Constants from "../../common/Constants";
 import { Link } from "react-router-dom";
@@ -80,8 +80,8 @@ class Header extends Component {
         this.signupNewCustomer = this.signupNewCustomer.bind(this);
         this.logoutClickHandler = this.logoutClickHandler.bind(this);
         this.openUserProfileHandler = this.openUserProfileHandler.bind(this);
+    
     }
-
     state = {
         loginFormUserValues: {
             // object containing values entered by the user in the text fields of the login form
@@ -116,10 +116,9 @@ class Header extends Component {
         showUserProfileDropDown: false, // boolean value indicating if the user profile dropdown is open; TRUE for open and FALSE for closed
         loggedIn: sessionStorage.getItem("access-token") == null ? false : true,//Logged in status is null if there is no accesstoken in sessionstorage
         loggedInUserInfo:[],
-        signedInUserInfo: {
-            id:"",
-            status:""
-        }
+        signupFailStatus: []
+           
+    
     };
 
     /**
@@ -249,36 +248,34 @@ class Header extends Component {
             loginFormValidationClassNames: currentLoginFormValidationClassNames,
         });
         
-        {
-            let dataLogin = {
-                "contact_number": this.state.loginFormUserValues.contactno,
-                "password": this.state.loginFormUserValues.loginPassword
-            };
-            let requestHeaderObj = { "Authorization" :"Basic " + window.btoa(this.state.loginFormUserValues.contactno + ":" + this.state.loginFormUserValues.loginPassword),
-            "Content-Type": "application/json" ,
-            "Cache-Control": "no-cache" };
-
-            const requestUrl = this.props.baseUrl + "/customer/login";
-            const that = this;
-            Utils.makeApiCall(
-              requestUrl,
-              null,
-              dataLogin,
-              Constants.ApiRequestTypeEnum.POST,
-              requestHeaderObj,
-              responseText => {
-                that.setState({
-                  loginSnackBarIsOpen:true
-                  
-                });
-                sessionStorage.setItem( "user-details",JSON.parse(responseText).first_name );
+        
+            
+        let dataLogin = null;
+        let xhrLogin = new XMLHttpRequest();
+        let that = this;
+        xhrLogin.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                if (xhrLogin.status === 200 || xhrLogin.status === 201){
                 sessionStorage.setItem("uuid", JSON.parse(this.responseText).id);
-                sessionStorage.setItem("access-token", JSON.getResponseHeader("access-token"));
-              },
-              () => {}
-            );
-          }
-          //this.closeModalHandler(); where to place this handler
+                sessionStorage.setItem("access-token", xhrLogin.getResponseHeader("access-token"));
+
+                that.setState({
+                    loggedIn: true,
+                    loginSnackBarIsOpen: true
+                });
+
+                that.closeModalHandler();
+            }
+        }
+        });
+
+        xhrLogin.open("POST", "http://localhost:8080/api/customer/login");
+        xhrLogin.setRequestHeader("Authorization", "Basic " + window.btoa(this.state.loginFormUserValues.contactno + ":" + this.state.loginFormUserValues.loginPassword));
+        xhrLogin.setRequestHeader("Content-Type", "application/json");
+        xhrLogin.setRequestHeader("Cache-Control", "no-cache");
+        xhrLogin.send(dataLogin);
+
+           
         };
 
     /**
@@ -327,40 +324,43 @@ class Header extends Component {
         /* (this.state.signupFormUserValues.contact.length!==10)
          ? this.setState({ signupErrorMsg:Constants.VALIDATE_CONTACT_ERROR_MSG})
          : this.setState({ signupErrorMsg:null});*/
-        {
-        let dataSignup = {
+        
+        let dataSignup = JSON.stringify({
             "contact_number": this.state.signupFormUserValues.contact,
             "email_address": this.state.signupFormUserValues.email,
             "first_name": this.state.signupFormUserValues.firstname,
             "last_name": this.state.signupFormUserValues.lastname,
             "password": this.state.signupFormUserValues.registerPassword
-        };
-        let requestHeaderObj = { "Content-Type": "application/json" };
+        });
 
-        const requestUrl = "http://localhost:8080/api/customer/signup";
-        const that = this;
-
-        Utils.makeApiCall(
-            requestUrl,
-            null,
-            dataSignup,
-            Constants.ApiRequestTypeEnum.POST,
-            requestHeaderObj,
-            responseText => {
-                const customerDetails = { ...this.state.signedInUserInfo};
-                customerDetails.id =JSON.parse(this.responseText).id;
-                customerDetails.status =JSON.parse(this.responseText).status;
+        let xhrSignup = new XMLHttpRequest();
+        let that = this;
+        xhrSignup.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                if (xhrSignup.status === 200 || xhrSignup.status === 201){
                 that.setState({
-                    signedInUserInfo: customerDetails,
-                    registerSnackBarIsOpen:true
+                    signupSuccess: true,
+                    registerSnackBarIsOpen: true
                 });
-            },
-            () => {}
-          );
+            }
+            /*else{
+                
+               that.setState({
+                signupFailStatus: JSON.parse(this.responseText)
+             });
+
+            }*/
         }
+        });
+
+        xhrSignup.open("POST", "http://localhost:8080/api/customer/signup");
+        xhrSignup.setRequestHeader("Content-Type", "application/json");
+        xhrSignup.setRequestHeader("Cache-Control", "no-cache");
+        xhrSignup.send(dataSignup);
+        //console.log(this.state.signupFailStatus.message);
     };
     /* CHECK => why responseText shows diabled , n why snack bar doesnt open on successful signup*/
-
+    
     loginSnackBarCloseHandler = (e) => {
         this.setState({ loginSnackBarIsOpen: false });
     }
