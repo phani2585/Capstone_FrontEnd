@@ -8,9 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import Star from "@material-ui/icons/Star";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import { makeStyles } from '@material-ui/core/styles';
-
-
-
+import 'font-awesome/css/font-awesome.min.css';
 
 /**
  * Functional component for displaying an restaurant card
@@ -54,7 +52,7 @@ const RestaurantCard = function (props) {
                 <Star id="star-icon" />{restaurant.customer_rating}({restaurant.number_customers_rated})
               </Button>
             <Typography gutterBottom variant="body1" color="textSecondary" component="p" id="right-avg-price">
-               {restaurant.average_price}  for two
+            <i class="fa fa-inr" aria-hidden="true"></i>{restaurant.average_price}  for two
               </Typography>
         </div>
     </CardContent>

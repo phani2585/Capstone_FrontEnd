@@ -19,6 +19,7 @@
     justify-content: space-between;
     float:bottom;
 }
+
 button#left-button {
     background-color:#ffdb58;
 }
@@ -27,5 +28,6 @@ button#left-button {
     height:'200px';
 }*/
 .MuiPaper-root.MuiPaper-elevation1.MuiCard-root.makeStyles-card-176.MuiPaper-rounded {
+    width:auto;
     height: auto;
 }

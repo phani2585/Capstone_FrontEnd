@@ -20,9 +20,19 @@ const styles = theme => ({
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-    backgroundColor: theme.palette.background.paper
-
+    backgroundColor: theme.palette.background.paper,
+    width: '100%'
   },
+    grow: {
+        flexGrow: 1,
+    },
+    input: {
+        display: 'none',
+    },
+    gridListMain: {
+        transform: 'translateZ(0)',
+        cursor: 'pointer',
+    },
 });
 
 class Home extends Component {
@@ -33,12 +43,12 @@ class Home extends Component {
     //this.getRestaurantByRestaurantName = this.getRestaurantByRestaurantName.bind(this);
   }*/
   state = {
-    isRestaurantDataLoaded: false,
+    //isRestaurantDataLoaded: false,
     restaurantData: [], // array containing all the restaurants info available
-    restaurantDataByName:[],
+    //restaurantDataByName:[],
     //isDataLoaded: true,
-    filteredRestaurantData: [],// array containing all the restaurants info filtered using search box
-    restaurantName: ""
+    //filteredRestaurantData: [],// array containing all the restaurants info filtered using search box
+    restaurant_name: ""
   };
 
   /**
@@ -86,8 +96,9 @@ class Home extends Component {
  */
  getRestaurantByRestaurantName = () => {
    //this.setState({ searchValue : event.target.value });
+  
   let requestparamsObj =  {"restaurant_name":"Lion Heart"};
-  const requestUrl = "http://localhost:8080/api/restaurant/name/"+ this.state.restaurantName;
+  const requestUrl = "http://localhost:8080/api/restaurant/name/"+this.state.restaurant_name;
   const that = this;
   Utils.makeApiCall(
       requestUrl,
@@ -111,6 +122,9 @@ class Home extends Component {
   );
 };
   
+restaurantClickHandler = (restaurantId) => {
+  this.props.history.push('/restaurant/' + restaurantId);
+}
 
   /**
    * Function called when the component is rendered
@@ -130,19 +144,17 @@ class Home extends Component {
       <div>
         <div>
           <Header
-            showLink={true}
-            showSearch={true}
-            searchImageByDescription={this.searchImageByDescription}
+            history={this.props.history}
+            showLogo={true}
+            showSearchBox={true}
+            //searchRestaurantByRestaurantName={this.searchRestaurantByRestaurantName}
             showLoginModal={true}
-            showProfile={true}
             enableMyAccount={true}
-          /></div>
-        <div >
-          <br />
-          <div className={classes.root}>
+          />
+          <div className="restaurants-main-container">
             <GridList cellHeight={400} className={classes.gridListMain} cols={4}>
               {this.state.restaurantData.map(restaurant => (
-                <GridListTile key={"restaurant" + restaurant.id} cols={restaurant.cols || 1}>
+                <GridListTile key={"restaurant" + restaurant.id} onClick={() => this.restaurantClickHandler(restaurant.id)} >
                   <Grid container className={classes.root} >
                     <Grid item>
                       <RestaurantCard
