@@ -145,11 +145,12 @@ restaurantClickHandler = (restaurantId) => {
       <div>
         <div>
           <Header
+            //baseUrl={this.props.baseUrl}
             history={this.props.history}
             showLogo={true}
             showSearchBox={true}
             //searchRestaurantByRestaurantName={this.searchRestaurantByRestaurantName}
-            showLoginModal={true}
+           showLoginModal={true} 
             enableMyAccount={true}
           />
           <div className="restaurants-main-container">

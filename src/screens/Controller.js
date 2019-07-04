@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Home from "../screens/home/Home";
 import Profile from "../screens/profile/Profile";
 import Details from "../screens/details/Details";
-import Checkout from "../screens/checkout/Checkout";
+//import Checkout from "../screens/checkout/Checkout";
 
 /**
  * Class component for controller

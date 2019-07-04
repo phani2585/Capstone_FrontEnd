@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import './Details.css';
 import Header from '../../common/header/Header';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import Button from '@material-ui/core/Button';
+import Checkout from '../checkout/Checkout';
 
 
 class Details extends Component {
             
     checkoutHandler = () => {
+        ReactDOM.render(<Checkout/>,document.getElementById('root'))
         this.props.history.push('/checkout/');
       }
 
