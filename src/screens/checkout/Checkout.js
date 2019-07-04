@@ -21,6 +21,10 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import IconButton from "@material-ui/core/IconButton";
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import addressInfo from '../../common/addressInfo';
 
 // inline styles for Material-UI components
@@ -32,6 +36,9 @@ const styles = theme => ({
     rootTab: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
+    },
+    addressIconButton:{
+        color:'green',
     },
     imagesGridList: {
         margin: "15px !important"
@@ -85,7 +92,22 @@ class Checkout extends Component {
     state = {
         activeStepValue : 0,
         steps : ['Delivery','Payment'],
-        tabValue :0
+        tabValue :0,
+        newAddressTabContainerValues: {
+            flatname: "",
+            locality: "",
+            city: "",
+            state: "",
+            pincode: "",
+        },
+        newAddressFormValidationClassNames: {
+            // object containing the classnames for the validation messages displayed below the text fields of the newAddress Tab container
+            flatname: Constants.DisplayClassname.DISPLAY_NONE,
+            locality: Constants.DisplayClassname.DISPLAY_NONE,
+            city: Constants.DisplayClassname.DISPLAY_NONE,
+            state: Constants.DisplayClassname.DISPLAY_NONE,
+            pincode: Constants.DisplayClassname.DISPLAY_NONE
+        },
         
     };
     
@@ -99,9 +121,51 @@ class Checkout extends Component {
     * Event handler called when the user tries to navigate to different tabs
     * @memberof Checkout
     */
-   tabChangeHandler = (event, value) => {this.setState({ value });}
+   tabChangeHandler = (event, tabValue) => {this.setState({ tabValue });}
 
+    /**
+   * Event handler called when the flatname text field is changed by the user in New Address Tab Container
+   * @param event defualt parameter for onChange
+   * @memberof Checkout (NewAddress TabContainer)
+   */
+    inputFlatNameChangeHandler = event => {
+    let currentNewAddressTabContainerValues = { ...this.state.newAddressTabContainerValues };
+    currentNewAddressTabContainerValues.flatname = event.target.value;
+    this.setState({ newAddressTabContainerValues: currentNewAddressTabContainerValues });
+};
 
+ /**
+   * Event handler called when the locality text field is changed by the user in New Address Tab Container
+   * @param event defualt parameter for onChange
+   * @memberof Checkout (NewAddress TabContainer)
+   */
+  inputLocalityChangeHandler = event => {
+    let currentNewAddressTabContainerValues = { ...this.state.newAddressTabContainerValues };
+    currentNewAddressTabContainerValues.locality = event.target.value;
+    this.setState({ newAddressTabContainerValues: currentNewAddressTabContainerValues });
+};
+
+/**
+   * Event handler called when the city text field is changed by the user in New Address Tab Container
+   * @param event defualt parameter for onChange
+   * @memberof Checkout (NewAddress TabContainer)
+   */
+  inputCityChangeHandler = event => {
+    let currentNewAddressTabContainerValues = { ...this.state.newAddressTabContainerValues };
+    currentNewAddressTabContainerValues.city = event.target.value;
+    this.setState({ newAddressTabContainerValues: currentNewAddressTabContainerValues });
+};
+
+/**
+   * Event handler called when the pincode text field is changed by the user in New Address Tab Container
+   * @param event defualt parameter for onChange
+   * @memberof Checkout (NewAddress TabContainer)
+   */
+  inputPincodeChangeHandler = event => {
+    let currentNewAddressTabContainerValues = { ...this.state.newAddressTabContainerValues };
+    currentNewAddressTabContainerValues.pincode = event.target.value;
+    this.setState({ newAddressTabContainerValues: currentNewAddressTabContainerValues });
+};
     
       
   /*  stepContentHandler = () => {
@@ -152,8 +216,8 @@ class Checkout extends Component {
                     <Tab label="NEW ADDRESS" />
                   </Tabs>
                 </AppBar>
-                {this.state.tabValue === 0 &&
-                     <TabContainer>
+                {this.state.tabValue === 0 && 
+                <TabContainer>
                          {!Utils.isUndefinedOrNull(addressInfo) ? (
                 <GridList
                   cellHeight={350}
@@ -175,8 +239,8 @@ class Checkout extends Component {
                      <IconButton
                      key="close"
                      aria-label="Close"
-                     //onClick={this.profileIconClickHandler}
-                     //className={classes.profileIconButton}
+                     onClick={this.addressIconClickHandler}
+                     className={classes.addressIconButton}
                      >
                          <CheckCircle/>
                      </IconButton>
@@ -184,13 +248,57 @@ class Checkout extends Component {
                   ))}
                 </GridList>
               ) : null}
-              </TabContainer>}
-                {this.state.tabValue === 1 && <TabContainer>NEW ADDRESS</TabContainer>}
+              </TabContainer>
+            }
+                {this.state.tabValue === 1 && 
+                <TabContainer>
+                    <div className="save-address-form">
+                    <br />
+                              <FormControl required>
+                                    <InputLabel htmlFor="flatname">Flat / Building No.</InputLabel>
+                                    <Input id="flatname" type="text" flatname={this.state.flatname} onChange={this.inputFlatNameChangeHandler} />
+                                    <FormHelperText className={this.state.newAddressFormValidationClassNames.flatname}>
+                                        <span className="red">required</span>
+                                    </FormHelperText>
+                                </FormControl>
+                                <br />
+                                <FormControl required >
+                                    <InputLabel htmlFor="locality">Locality</InputLabel>
+                                    <Input id="locality" type="text" locality={this.state.locality} onChange={this.inputLocalityChangeHandler} />
+                                    <FormHelperText className={this.state.newAddressFormValidationClassNames.locality}>
+                                        <span className="red">required</span>
+                                    </FormHelperText>
+                                </FormControl>
+                                <br />
+                                <FormControl required>
+                                    <InputLabel htmlFor="city">City</InputLabel>
+                                    <Input id="city" type="text" city={this.state.city} onChange={this.inputCityChangeHandler} />
+                                    <FormHelperText className={this.state.newAddressFormValidationClassNames.city}>
+                                        <span className="red">required</span>
+                                    </FormHelperText>
+                                </FormControl>
+                                <br />
+                                
+                                
+                                <FormControl required>
+                                    <InputLabel htmlFor="pincode">Pincode</InputLabel>
+                                    <Input id="pincode" type="text" pincode={this.state.pincode} onChange={this.inputPincodeChangeHandler} />
+                                    <FormHelperText className={this.state.newAddressFormValidationClassNames.pincode}>
+                                        <span className="red">required</span>
+                                    </FormHelperText>
+                                </FormControl>
+                                <br />
+                                <Button variant="contained" color="secondary" onClick={this.saveCustomerAddress}>SAVE ADDRESS</Button>
+                                <br />
+                                </div>
+                </TabContainer>
+                }
                 
               </div>)
             }
             </Typography>
               <div className={classes.actionsContainer}>
+              <br />
                 <div>
                   <Button
                     disabled={this.state.activeStepValue === 0}
