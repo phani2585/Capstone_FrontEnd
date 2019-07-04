@@ -19,6 +19,8 @@ import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import IconButton from "@material-ui/core/IconButton";
 import addressInfo from '../../common/addressInfo';
 
 // inline styles for Material-UI components
@@ -170,6 +172,14 @@ class Checkout extends Component {
                      {address.state.state_name}<br/>
                      {address.pincode}<br/>
                      </div> 
+                     <IconButton
+                     key="close"
+                     aria-label="Close"
+                     //onClick={this.profileIconClickHandler}
+                     //className={classes.profileIconButton}
+                     >
+                         <CheckCircle/>
+                     </IconButton>
                     </GridListTile>
                   ))}
                 </GridList>
