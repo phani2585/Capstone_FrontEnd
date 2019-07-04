@@ -1,0 +1,8 @@
+.address-format {
+    display:flex;
+    text-align: start;
+
+}
+.address-tile {
+    cursor: pointer;
+  }
