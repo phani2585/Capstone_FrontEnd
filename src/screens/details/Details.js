@@ -34,7 +34,13 @@ class Details extends Component {
         ReactDOM.render(<Checkout/>,document.getElementById('root'))
         this.props.history.push('/checkout/');
       }
-
+      AddItemHandler = () => {
+        this.setState({ AddSnackBarIsOpen:true });
+        
+      }
+      AddSnackBarCloseHandler = () => {
+        this.setState({ AddSnackBarIsOpen:false });
+      }
      
 
    /**
