@@ -116,7 +116,9 @@ class Header extends Component {
         showUserProfileDropDown: false, // boolean value indicating if the user profile dropdown is open; TRUE for open and FALSE for closed
         loggedIn: sessionStorage.getItem("access-token") == null ? false : true,//Logged in status is null if there is no accesstoken in sessionstorage
         loggedInUserInfo:[],
-        signupFailStatus: []
+        signupFailStatus: [],
+        
+       
            
     
     };
@@ -261,10 +263,12 @@ class Header extends Component {
 
                 that.setState({
                     loggedIn: true,
-                    loginSnackBarIsOpen: true
+                    loginSnackBarIsOpen: true,
+                    
                 });
 
                 that.closeModalHandler();
+
             }
         }
         });

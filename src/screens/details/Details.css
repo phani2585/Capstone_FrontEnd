@@ -1,4 +1,104 @@
-#blue-btn {
+.details-main-container{
+   
+
+}
+/* A container for the details of the image*/
+.details-body-container {
+    display: flex;
+    background-color:lightgrey;
+    height: 300px; 
+    margin-top: 0px;
+  }
+  
+  /* a container for the left image*/
+.left-details {
+    float: left;
+    width: 20%;
+    height: 250px; 
+  
+    align-self:center;
+    padding-left: 15px;
+    padding-right: 15px;
+   
+  }
+  .restaurant-img{
+    height: 100%;
+    width:100%;
+  }
+ 
+  /* a container for the right image text details*/
+  .right-details {
+   
+    float: right;
+    width: 80%;
+    padding-top: 45px;
+    padding-left: 35px;
+   
+  }
+  .locality-div{
+    padding-top: 4px;
+    font-size: medium;
+    font-weight:normal;
+  }
+ 
+  .fa-fa-star{
+    float: left;
+}
+  .average-rating{
+      color: darkgray;
+      font-size: 80%;
+  }
+  .fa-fa-inr{
+   padding-left: 35%;
+}
+  .average-price{
+    color: darkgray;
+    font-size: 80%;
+  }
+
+  /*category-list*/
+  .category-list{
+      display: inline;
+  }
+
+  .bottom-left-category-details{
+      width: 40%;
+      border: 0;
+      padding: 25px;
+  }
+ 
+.list-category-name{
+    text-transform: uppercase;
+}
+
+  
+  .item-row{
+      
+      text-transform: lowercase;
+  padding: 8px;
+     
+     
+  }
+  
+  .item-row-right{
+float:right;
+padding-top:0;
+  }
+  .add-icon{
+     
+     padding-left: 20px;
+      color: gray;
+  }
+  #facircle{
+      color:green;
+      padding-right: 8px;
+  }
+  #fainr{
+    padding-right: 8px;
+   
+  }
+
+  #blue-btn {
     background-color:blue;
     float:bottom;
     align-self: center;

@@ -32,6 +32,7 @@ const styles = theme => ({
     gridListMain: {
         transform: 'translateZ(0)',
         cursor: 'pointer',
+        margin: "15px !important"
     },
 });
 
@@ -48,7 +49,8 @@ class Home extends Component {
     //restaurantDataByName:[],
     //isDataLoaded: true,
     //filteredRestaurantData: [],// array containing all the restaurants info filtered using search box
-    restaurant_name: ""
+    restaurant_name: "",
+    loggedIn: sessionStorage.getItem("access-token") == null ? false : true,//Logged in status is null if there is no accesstoken in sessionstorage
   };
 
   /**
@@ -150,11 +152,11 @@ restaurantClickHandler = (restaurantId) => {
             showLogo={true}
             showSearchBox={true}
             //searchRestaurantByRestaurantName={this.searchRestaurantByRestaurantName}
-           showLoginModal={true} 
+            showLoginModal={true}
             enableMyAccount={true}
           />
           <div className="restaurants-main-container">
-            <GridList cellHeight={400} className={classes.gridListMain} cols={4}>
+            <GridList cellHeight ={400} className={classes.gridListMain} cols={4}>
               {this.state.restaurantData.map(restaurant => (
                 <GridListTile key={"restaurant" + restaurant.id} onClick={() => this.restaurantClickHandler(restaurant.id)} >
                   <Grid container className={classes.root} >
