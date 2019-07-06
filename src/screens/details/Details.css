@@ -5,9 +5,14 @@
 /* A container for the details of the image*/
 .details-body-container {
     display: flex;
+    flex-direction: row;
     background-color:lightgrey;
     height: 300px; 
     margin-top: 0px;
+  }
+  .bottom-container-details {
+    display: flex;
+    flex-direction: row;
   }
   
   /* a container for the left image*/
@@ -102,4 +107,24 @@ padding-top:0;
     background-color:blue;
     float:bottom;
     align-self: center;
+}
+
+.bottom-right-cart-details{
+    float:top;
+    float:right;
+    padding-left: 10%;
+    padding-top: 2%;
+    width:40%;
+    border: 5px;
+}
+.my-cart-header{
+  font-weight: bolder;
+  padding-left: 3%;
+
+}
+.total-amount{
+    font-weight: medium;
+}
+#rupee{
+   float:right;
 }
