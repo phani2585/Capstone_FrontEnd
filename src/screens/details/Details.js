@@ -33,27 +33,28 @@ class Details extends Component {
 
     state = {
         AddSnackBarIsOpen: false,
-        RestaurantByIdData:{
+        RestaurantByIdData: {
             "id": "",
-  "restaurant_name": "",
-  "photo_URL": "",
-  "customer_rating": "",
-  "average_price": "",
-  "number_customers_rated": "",
-  "address":{
-    "id": "",
-    "flat_building_name": "",
-    "locality": "",
-    "city": "",
-    "pincode":"",
-    "state": {
-        "id": "",
-        "state_name": ""
-      }
+            "restaurant_name": "",
+            "photo_URL": "",
+            "customer_rating": "",
+            "average_price": "",
+            "number_customers_rated": "",
+            "address": {
+                "id": "",
+                "flat_building_name": "",
+                "locality": "",
+                "city": "",
+                "pincode": "",
+                "state": {
+                    "id": "",
+                    "state_name": ""
+                }
 
-  },
-  "categories":[]
-         }
+            },
+            "categories": []
+        }
+         
     }
 
     checkoutHandler = () => {
@@ -68,11 +69,14 @@ class Details extends Component {
         this.setState({ AddSnackBarIsOpen: false });
     }
 
-componentWillMount() {
-   
+    componentWillMount() {
+
         let data = null;
+        //let id="1dd86f90-a296-11e8-9a3a-720006ceb890";
+        
         let xhr = new XMLHttpRequest();
         let that = this;
+        let id=this.props.match.params.id;
         xhr.addEventListener("readystatechange", function () {
             if (this.readyState === 4) {
                 that.setState({
@@ -82,7 +86,7 @@ componentWillMount() {
             }
         });
 
-         xhr.open("GET", this.props.baseUrl + "/restaurant/246165d2-a238-11e8-9077-720006ceb890");
+        xhr.open("GET", this.props.baseUrl + "/restaurant/"+ id);
         xhr.setRequestHeader("Cache-Control", "no-cache");
         xhr.send(data);
     }
@@ -131,7 +135,7 @@ componentWillMount() {
                             </div>
                         </div>
 
-                        </div>
+                    </div>
                     <div className="bottom-container-details">
                         <div className="bottom-left-category-details">
                             <div>
@@ -180,29 +184,29 @@ componentWillMount() {
                         </div>
                     </div>
                 </div>
-                
-          
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left', }}
-                className="snackbar"
-                open={this.state.AddSnackBarIsOpen}
-                onClose={this.AddSnackBarCloseHandler}
-                ContentProps={{ 'aria-describedby': 'message-id', }}
-                message={<span id="message-id">Item added to cart!</span>}
-                action={[
-                    <IconButton
-                        key="close"
-                        aria-label="Close"
-                        color="inherit"
-                        onClick={this.AddSnackBarCloseHandler}
-                    >
-                        <CloseIcon />
-                    </IconButton>,
-                ]}
-            />
-          </MuiThemeProvider >
-                
-       
+
+
+                <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left', }}
+                    className="snackbar"
+                    open={this.state.AddSnackBarIsOpen}
+                    onClose={this.AddSnackBarCloseHandler}
+                    ContentProps={{ 'aria-describedby': 'message-id', }}
+                    message={<span id="message-id">Item added to cart!</span>}
+                    action={[
+                        <IconButton
+                            key="close"
+                            aria-label="Close"
+                            color="inherit"
+                            onClick={this.AddSnackBarCloseHandler}
+                        >
+                            <CloseIcon />
+                        </IconButton>,
+                    ]}
+                />
+            </MuiThemeProvider >
+
+
         )
     }
 }
