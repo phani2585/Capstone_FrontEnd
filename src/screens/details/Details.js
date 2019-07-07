@@ -1,214 +1,344 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import './Details.css';
+import React , {Component} from 'react';
 import Header from '../../common/header/Header';
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import Button from '@material-ui/core/Button';
-import Checkout from '../checkout/Checkout';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import { library } from 'npm i --save @fortawesome/fontawesome-svg-core';
+import { faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faStopCircle } from '@fortawesome/free-solid-svg-icons';
+import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-//import this.state.RestaurantByIdData from '../../common/this.state.RestaurantByIdData';
-
-import ListSubheader from '@material-ui/core/ListSubheader';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-
 import Divider from '@material-ui/core/Divider';
-import AddIcon from '@material-ui/icons/Add';
-import Icon from '@material-ui/core/Icon';
-import { red } from '@material-ui/core/colors';
-import { green } from '@material-ui/core/colors';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-
+import IconButton from '@material-ui/core/IconButton';
+import Add from '@material-ui/icons/Add';
+import './Details.css'
 import Card from '@material-ui/core/Card';
-import Badge from '@material-ui/core/Badge';
-//import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Badge from '@material-ui/core/Badge';
 import ShoppingCart from '@material-ui/icons/ShoppingCart';
+import Snackbar from '@material-ui/core/Snackbar';
+import { Button } from '@material-ui/core';
+import Remove from '@material-ui/icons/Remove';
+import CloseIcon from '@material-ui/icons/Close';
+library.add(faStar);
+library.add(faRupeeSign);
+library.add(faCircle);
+library.add(faStopCircle);
+
+
+const styles = theme => ({
+    snackbar: {
+        margin: theme.spacing.unit,
+    },
+    
+});
+
 
 class Details extends Component {
 
-    state = {
-        AddSnackBarIsOpen: false,
-        RestaurantByIdData: {
-            "id": "",
-            "restaurant_name": "",
-            "photo_URL": "",
-            "customer_rating": "",
-            "average_price": "",
-            "number_customers_rated": "",
-            "address": {
-                "id": "",
-                "flat_building_name": "",
-                "locality": "",
-                "city": "",
-                "pincode": "",
-                "state": {
-                    "id": "",
-                    "state_name": ""
-                }
-
-            },
-            "categories": []
+    constructor(){
+        super(); 
+        this.state ={
+            open: false,
+            vertical: 'top',
+            horizontal: 'center',
+            restaurantData: '',
+            address: '',
+            categories: [],
+            cartItems: [],
+            totalCartItemsValue: 0.0,
+            totalCartItems: 0,
+            
         }
-         
     }
 
-    checkoutHandler = () => {
-        ReactDOM.render(<Checkout />, document.getElementById('root'))
-        this.props.history.push('/checkout/');
-    }
-    AddItemHandler = () => {
-        this.setState({ AddSnackBarIsOpen: true });
+componentWillMount(){
+     let xhr = new XMLHttpRequest();
+     let that = this;
+     let dataRestaurant = null;
+     xhr.addEventListener("readystatechange", function ()  {
+         if(this.readyState === 4){
+             that.setState({
+                 restaurantData: JSON.parse(this.responseText),
+                 address: JSON.parse(this.responseText).address,
+                 categories: JSON.parse(this.responseText).categories
+             })
+             
+         }
+     });
 
-    }
-    AddSnackBarCloseHandler = () => {
-        this.setState({ AddSnackBarIsOpen: false });
-    }
+     xhr.open("GET",  this.props.baseUrl + "/restaurant/"+ this.props.match.params.restaurantId);
+     xhr.setRequestHeader("Cache-Control", "no-cache");
+     xhr.send(dataRestaurant);
+}
 
-    componentWillMount() {
-
-        let data = null;
-        //let id="1dd86f90-a296-11e8-9a3a-720006ceb890";
-        
-        let xhr = new XMLHttpRequest();
-        let that = this;
-        let id=this.props.match.params.id;
-        xhr.addEventListener("readystatechange", function () {
-            if (this.readyState === 4) {
-                that.setState({
-                    RestaurantByIdData: JSON.parse(this.responseText)
-                    //RestaurantByIdDataAddress: JSON.parse(this.responseText).address
-                });
+addMenuItemClickHandler = (item) => {
+    let newCartItems = this.state.cartItems;
+    let itemAlreadyAdded = false;
+    if (newCartItems != null) {
+        for (var i = 0; i < newCartItems.length; i++) {
+            if (newCartItems[i].id === item.id) {
+                item.quantity = item.quantity + 1;
+                item.totalPrice = item.quantity * item.price;
+                itemAlreadyAdded = true;
+                break;
             }
-        });
+        }
+    }
+    if (!itemAlreadyAdded) {
+        item.quantity = 1;
+        item.totalPrice = item.quantity * item.price;
+        newCartItems.push(item);
+        
+    }
+    this.setState({ cartItems: newCartItems, open: true});
+     if(item.quantity > 1){
+         this.setState({cartNotificationMessage:'Item quantity increased by 1!'})
+     }else{
+         this.setState({ cartNotificationMessage: 'Item added to cart!'})
+     }
+    this.updateTotalCartItemsValue(true, item.price, item.quantity);
+    
+};
 
-        xhr.open("GET", this.props.baseUrl + "/restaurant/"+ id);
-        xhr.setRequestHeader("Cache-Control", "no-cache");
-        xhr.send(data);
+updateTotalCartItemsValue(isAdded, price, quantity) {
+    let newTotalCartItemsValue = this.state.totalCartItemsValue;
+    if (isAdded) {
+        newTotalCartItemsValue = newTotalCartItemsValue + price;
+        
+    } else {
+        newTotalCartItemsValue = newTotalCartItemsValue - price;
+        
+    }
+    
+    if(isAdded && quantity >= 1){
+        this.setState({totalCartItems: this.state.totalCartItems + 1});
+    }else{
+        this.setState({totalCartItems: this.state.totalCartItems - 1});
     }
 
-    /**
-    * Function called when the component is rendered
-    * @memberof Details
-    */
-    render() {
-        // const { classes } = this.props;
+    this.setState({ totalCartItemsValue: newTotalCartItemsValue });
+}
 
-        return (
-            <MuiThemeProvider>
-                <div className="details-main-container">
-                    <Header
-                        showLogo={true}
-                        history={this.props.history}
-                        showSearchBox={false}
-                        showLoginModal={true}
-                        showProfile={false}
-                        enableMyAccount={false}
-                    />
-                    <div className="details-body-container">
-                        <div className="left-details">
-                            <img className="restaurant-img" src={this.state.RestaurantByIdData.photo_URL} alt="restaurantimage" />
-                        </div>
-                        <div className="right-details">
-                            <div>
-                                <Typography variant="headline" component="h3">{this.state.RestaurantByIdData.restaurant_name}</Typography>
-                            </div>
-                            <div className="locality-div">{this.state.RestaurantByIdData.address.locality}</div>
-                            <br />
-                            <div>
-                                {this.state.RestaurantByIdData.categories.map((category, index) => ((index ? ', ' : '') + category.category_name))}
-                            </div>
-                            <br />
-                            <div className="fa-icon">
-                                <div className="fa-fa-star">
-                                    <i class="fa fa-star" aria-hidden="true"></i>{this.state.RestaurantByIdData.customer_rating}
-                                    <div className="average-rating">AVERAGE RATING BY <br />{this.state.RestaurantByIdData.number_customers_rated} CUSTOMERS</div>
-                                </div>
-                                <div className="fa-fa-inr">
-                                    <i class="fa fa-inr" aria-hidden="true"></i>{this.state.RestaurantByIdData.average_price}
-                                    <div className="average-price">AVERAGE COST FOR<br /> TWO PEOPLE</div>
-                                </div>
-                            </div>
-                        </div>
 
+addCartItemClickHandler = (item) => {
+    item.quantity = item.quantity + 1;
+    item.totalPrice = item.quantity * item.price;
+    this.setState({ open: true, cartNotificationMessage: 'Item quantity increased by 1!' });
+    this.updateTotalCartItemsValue(true, item.price, item.quantity);
+    
+};
+
+removeCartItemClickHandler = (item) => {
+    let removeCartItems = this.state.cartItems;
+    for (var i = 0; i < removeCartItems.length; i++) {
+        if (removeCartItems[i].id === item.id) {
+            if (item.quantity > 1) {
+                item.quantity = item.quantity - 1;
+                item.totalPrice = item.quantity * item.price;
+            } else {
+                removeCartItems.splice(i, 1);
+                item.totalPrice = 0;
+            }
+        }
+    }
+    this.setState({ cartItems: removeCartItems, open: true, cartNotificationMessage: 'Item quantity decreased by 1!' });
+    this.updateTotalCartItemsValue(false, item.price, item.quantity);
+};
+
+handleClose = () => {
+    this.setState({ open: false });
+};
+
+
+onClickCheckoutButton = state => () => {
+    if(this.state.totalCartItems === 0 ){
+        this.setState({open: true, cartNotificationMessage: "Please add an item to your cart!"})
+        return;
+    }
+    // if (sessionStorage.getItem("access-token") === null) {
+    //     this.setState({open: true, cartNotificationMessage:  "Please login first!"})
+    //     return;
+    // }
+
+    this.props.history.push({
+        pathname: "/checkout",
+        state: { cartItems: this.state.cartItems, totalCartItemsValue: this.state.totalCartItemsValue }
+    })
+};
+
+    render(){
+        const { classes } = this.props;
+        let restaurantData = this.state.restaurantData
+
+        return(
+            <div className="details-container">
+                <Header 
+                showLogo={true}
+                history={this.props.history}
+                showSearchBox={false}
+                showLoginModal={true}
+               
+                enableMyAccount={false}/>
+                <div className="restaurant-info">
+                    <div className="restaurant-image">
+                        <span>
+                        <img className="restaurant-img" src={restaurantData.photo_URL} alt="featured restaurant" />
+                        </span>
                     </div>
-                    <div className="bottom-container-details">
-                        <div className="bottom-left-category-details">
-                            <div>
-                                {this.state.RestaurantByIdData.categories.map((category, index) => (
-                                    <List className="list-category-name" key={category.id}>
-                                        <ListItem>
-                                            <ListItemText primary={category.category_name} className="list-category-name" />
-                                        </ListItem>
-                                        <Divider />
-                                        {
-                                            category.item_list.map((subitem, i) => {
-                                                return (<ul key={subitem.id}>
-                                                    <div className="item-row">
-                                                        <div className="item-row-left">
-                                                            <i class="fa fa-circle" color={(subitem.item_type === "VEG") ? red : green} id="facircle" aria-hidden="true"></i>{subitem.item_name}
-                                                        </div>
-                                                        <div className="item-row-right">
-                                                            <i class="fa fa-inr" id="fainr" aria-hidden="true" ></i>{subitem.price}
-                                                            <AddIcon className="add-icon" onClick={this.AddItemHandler} />
-                                                        </div>
-                                                    </div>
-                                                </ul>
-                                                )
-                                            })
-                                        }
-                                    </List>
-                                ))
-                                }
+                    <div className="restaurant-details">
+                        <span>
+                        <Typography gutterBottom variant="h4" component="h2">
+                          {restaurantData.restaurant_name}
+                        </Typography>
+                        <Typography variant="h6">
+                          {this.state.address.locality}
+                        </Typography>
+                        <br/>
+                       <Typography variant="subtitle1" gutterBottom>
+                           {this.state.categories.map((category, index) =>(
+                               <span key={"category"+ category.id}>{(index ? ', ' : '') + category.category_name}</span>
+                           ))}
+                       </Typography>
+                        </span>
+                        <div className="restaurant-rating-price">
+                            <div className="User-rating">
+                                <div>
+                                    <FontAwesomeIcon icon="star"/> 
+                                    <span className="details-rating-price"> {restaurantData.customer_rating}</span>
+                                </div>
+                                <div>
+                                    <Typography variant="caption">
+                                        <span>AVERAGE RATING BY</span>
+                                        <span className="usersRated"> {restaurantData.number_customers_rated} </span>
+                                        <span>CUSTOMER</span>
+                                    </Typography>
+                                </div>
+                            </div>
+                            <div className="restaurant-pricing">
+                               <div className="details-price">
+                                   <FontAwesomeIcon icon="rupee-sign"/>
+                                   <span className="details-rating-price">{restaurantData.average_price}</span>
+                               </div>
+                               <div className="details-price">
+                                 <Typography variant="caption"><span>AVERAGE COST FOR TWO PEOPLE</span></Typography>
+                               </div>
                             </div>
                         </div>
-                        <div className="bottom-right-cart-details">
-                            <Card >
-                                <CardContent>
-                                    <div>
-                                        <Badge className="badge" badgeContent={4} color="primary">
-                                            <ShoppingCart />
-                                        </Badge>
-                                        <span className="my-cart-header">My Cart</span>
-                                    </div>
-                                    <div>
-                                        <span className="total-amount">TOTAL AMOUNT</span><i id="rupee" class="fa fa-inr" aria-hidden="true" ></i>
-                                    </div>
-                                    <Button variant="contained" color="inherit" id="blue-btn" onClick={this.checkoutHandler}>Checkout</Button>
-                                </CardContent>
-                            </Card>
-                        </div>
                     </div>
+
                 </div>
+                <div className="restaurant-menu-items">
+                    <div className="menu-items">
+                        {this.state.categories.map(category =>(
+                            <div key={"categories"+ category.id}>
+                              <h3 className="CategoryName">{category.category_name}</h3>
+                              <Divider />
+                             <br />
+                             {category.item_list.map(item => (
+                                 <div className="Category-items" key={"item"+item.id}>
+                                    <div  className="item">
+                                    {item.item_type === 'VEG' ? <FontAwesomeIcon icon="circle" className="veg-item-color"/> : <FontAwesomeIcon icon="circle" className="non-veg-item-color"/>} 
+                                    <span>&nbsp;&nbsp;&nbsp; {item.item_name}</span> 
+                                    </div>  
+                                    <div className="item-price">
+                                      <FontAwesomeIcon icon="rupee-sign"/>
+                                      <span> {item.price} </span>
+                                    </div>
+                                    <div className="item-add">
+                                      <IconButton
+                                        key="close"
+                                        aria-label="Close"
+                                        color="inherit"
+                                        onClick={() => this.addMenuItemClickHandler(item)}>
+                                        <Add/>
+                                        </IconButton>
+                                    </div> 
+                                 </div>
+                             ))}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="my-cart">
+                       <Card className="card">
+                          <CardContent>
+                            <div>
+                             <Typography gutterBottom variant="h6" component="h4">
+                                 <Badge badgeContent={this.state.totalCartItems} color="primary" className="badge" >
+                                   <ShoppingCart/>
+                                 </Badge>
+                                 <span style={{marginLeft:'20px'}}>My Cart</span>
+                             </Typography>
+                            </div>
+                            {this.state.cartItems.map(item => (
+                                <div className="Category-items" key={"item"+ item.id}>
+                                    <div  className="item added-item">
+                                     {item.item_type === 'VEG' ? <FontAwesomeIcon icon={faStopCircle} className="veg-item-color" aria-hidden="true"/> : <FontAwesomeIcon icon={faStopCircle} className="non-veg-item-color"/>} 
+                                     
+                                    <span>&nbsp;&nbsp;&nbsp; {item.item_name}</span> 
+                                    </div>
+                                    <div className="added-item">
+                                   <span>
+                                        <IconButton  
+                                               key="close"
+                                               aria-label="Close"
+                                               color="inherit" 
+                                               onClick={() => this.removeCartItemClickHandler(item)}>
+                                             <Remove/>
+                                        </IconButton>
+                                     </span>
+                                    <span>{item.quantity}</span>
+                                    <span >
+                                       <IconButton 
+                                              key="close"
+                                              aria-label="close"
+                                              color="inherit"
+                                              onClick={() => this.addCartItemClickHandler(item)}>
+                                                  <Add/>
+                                              </IconButton>
+                                    </span> </div>
+                                    <span> 
+                                     <FontAwesomeIcon icon="rupee-sign"/> {(item.totalPrice).toFixed(2)}</span> 
+                                 </div>
+                            ))}
+                            <br/>
+                            <div>
+                                <span  className="item-total">TOTAL AMOUNT</span>
+                                <span className="item-rupee"><FontAwesomeIcon icon="rupee-sign"/>  {(this.state.totalCartItemsValue).toFixed(2)}</span>
+                            </div>
+                            <br/>
+                            <Button className="cart-button"  variant="contained" color="primary"
+                             onClick={this.onClickCheckoutButton()}>
+                              CHECKOUT
+                            </Button>
+                            <Snackbar
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        
+                                        open={this.state.open}
+                                        autoHideDuration={1000}
+                                        onClose={this.handleClose}
+                                        ContentProps={{
+                                            'aria-describedby': 'message-id',
+                                        }}
+                                        message={<span id="message-id">{this.state.cartNotificationMessage}</span>}
 
-
-                <Snackbar
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left', }}
-                    className="snackbar"
-                    open={this.state.AddSnackBarIsOpen}
-                    onClose={this.AddSnackBarCloseHandler}
-                    ContentProps={{ 'aria-describedby': 'message-id', }}
-                    message={<span id="message-id">Item added to cart!</span>}
-                    action={[
-                        <IconButton
-                            key="close"
-                            aria-label="Close"
-                            color="inherit"
-                            onClick={this.AddSnackBarCloseHandler}
-                        >
-                            <CloseIcon />
-                        </IconButton>,
-                    ]}
-                />
-            </MuiThemeProvider >
-
-
-        )
+                                        action={[
+                                            <IconButton key="close" aria-label="Close" color="inherit" onClick={this.handleClose}>
+                                              <CloseIcon className={classes.icon} />
+                                            </IconButton>,
+                                          ]}
+                                    />
+                          </CardContent>    
+                       </Card>    
+                    </div>               
+                </div>
+            
+            </div>
+        );
     }
 }
 
-export default Details;
+export default withStyles(styles)(Details);

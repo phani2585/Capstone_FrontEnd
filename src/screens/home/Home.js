@@ -99,31 +99,26 @@ class Home extends Component {
 /*CHECK this API n complete search Box implemetation*/
  getRestaurantByRestaurantName = () => {
    //this.setState({ searchValue : event.target.value });
+   let data = null;
+   //let id="1dd86f90-a296-11e8-9a3a-720006ceb890";
+   
+   let xhr = new XMLHttpRequest();
+   let that = this;
+   let name="Lion Heart";
+   xhr.addEventListener("readystatechange", function () {
+       if (this.readyState === 4) {
+           that.setState({
+               RestaurantDataByName: JSON.parse(this.responseText).restaurants
+               
+           });
+       }
+   });
+
+   xhr.open("GET", this.props.baseUrl + "/restaurant/name/"+ name);
+   xhr.setRequestHeader("Cache-Control", "no-cache");
+   xhr.send(data);
+}
   
-  let requestparamsObj =  {"restaurant_name":"Lion Heart"};
-  const requestUrl = "http://localhost:8080/api/restaurant/name/"+this.state.restaurant_name;
-  const that = this;
-  Utils.makeApiCall(
-      requestUrl,
-      requestparamsObj,
-      null,
-      Constants.ApiRequestTypeEnum.GET,
-      null,
-      responseText => {
-          that.setState(
-              {
-                  restaurantDataByName: JSON.parse(responseText).restaurants
-              },
-              function () {
-                  that.setState({
-                      isRestaurantDataLoaded: true
-                  });
-              }
-          );
-      },
-      () => { }
-  );
-};
   
 restaurantClickHandler = (restaurantId) => {
   this.props.history.push('/restaurant/' + restaurantId);

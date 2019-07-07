@@ -1,130 +1,142 @@
-.details-main-container{
-   
-
+.restaurant-info {
+    height: 10%;
+    background-color: #d9d9d9;
+    display: flex;
+    flex-direction: row;
+    
 }
-/* A container for the details of the image*/
-.details-body-container {
+
+.restaurant-image{
     display: flex;
     flex-direction: row;
-    background-color:lightgrey;
-    height: 300px; 
-    margin-top: 0px;
-  }
-  .bottom-container-details {
+    padding: 2%;
+}
+
+.restaurant-img{
+    height: 200px;
+    width: auto;
+}
+
+.restaurant-details{
+    display: flex;
+    flex-direction: column;
+    padding: 2%;
+    width: auto;
+    max-width: 100%;
+}
+
+.restaurant-rating-price{
     display: flex;
     flex-direction: row;
-  }
-  
-  /* a container for the left image*/
-.left-details {
-    float: left;
-    width: 20%;
-    height: 250px; 
-  
-    align-self:center;
-    padding-left: 15px;
-    padding-right: 15px;
-   
-  }
-  .restaurant-img{
-    height: 100%;
-    width:100%;
-  }
- 
-  /* a container for the right image text details*/
-  .right-details {
-   
-    float: right;
-    width: 80%;
-    padding-top: 45px;
-    padding-left: 35px;
-   
-  }
-  .locality-div{
+    width: auto;
+}
+
+.User-rating{
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    max-width: 60%;
+}
+
+.details-rating-price{
+    font-weight: 500;
+    font-size: 18px;
+    width:auto;
+    padding-left: 4px;
+}
+
+.usersRated{
+    text-decoration: lightgray;
+    font-weight: bold;
+}
+
+.restaurant-pricing{
     padding-top: 4px;
-    font-size: medium;
-    font-weight:normal;
-  }
- 
-  .fa-fa-star{
-    float: left;
+    padding-left: 50%;
+    width: auto;
 }
-  .average-rating{
-      color: darkgray;
-      font-size: 80%;
-  }
-  .fa-fa-inr{
-   padding-left: 35%;
+
+.details-price{
+    display: flex;
+    flex-direction: row;
 }
-  .average-price{
-    color: darkgray;
-    font-size: 80%;
-  }
 
-  /*category-list*/
-  .category-list{
-      display: inline;
-  }
+/*--------------------------------------------*/
+.restaurant-menu-items{
+    padding: 50px;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-items: top;
+}
 
-  .bottom-left-category-details{
-      width: 40%;
-      border: 0;
-      padding: 25px;
-  }
- 
-.list-category-name{
+.menu-items{
+    width: 50%;
+}
+
+.CategoryName{
     text-transform: uppercase;
+    font-weight: normal;
 }
 
-  
-  .item-row{
-      
-      text-transform: lowercase;
-  padding: 8px;
-     
-     
-  }
-  
-  .item-row-right{
-float:right;
-padding-top:0;
-  }
-  .add-icon{
-     
-     padding-left: 20px;
-      color: gray;
-  }
-  #facircle{
-      color:green;
-      padding-right: 8px;
-  }
-  #fainr{
-    padding-right: 8px;
+.Category-items{
+    display: flex;
+    align-items: baseline;
    
-  }
-
-  #blue-btn {
-    background-color:blue;
-    float:bottom;
-    align-self: center;
 }
 
-.bottom-right-cart-details{
-    float:top;
-    float:right;
-    padding-left: 10%;
-    padding-top: 2%;
-    width:40%;
-    border: 5px;
+.item{
+    font-size: 18px;
+    min-width: 75%;
 }
-.my-cart-header{
-  font-weight: bolder;
-  padding-left: 3%;
 
+.veg-item-color{
+    color: green;
 }
-.total-amount{
-    font-weight: medium;
+
+.non-veg-item-color{
+    color: red;
 }
-#rupee{
-   float:right;
+
+.item-price{
+   min-width: 50px;
+}
+
+.item-add{
+  margin-left: 20px;
+}
+
+/*-------------------------------*/
+.my-cart{
+    float: right;
+    width: 700px;
+    margin-left: 80px;
+    
+}
+
+.added-item{
+    min-width: 43%;
+}
+
+.badge{
+    margin: -0.25;
+    z-index: 0;
+}
+
+
+.card{
+    padding: 10px;
+}
+
+.cart-button {
+   width: 100%;
+}
+
+.item-total{
+    font-weight: 700;
+}
+
+.item-rupee{
+    float: right;
+    margin-right: 20px;
 }
